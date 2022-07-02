@@ -7,7 +7,7 @@ export interface IApp {
 
 class App implements IApp {
     private controller: IAppController;
-    private view: IAppView;
+    public view: IAppView;
     constructor() {
         this.controller = new AppController();
         this.view = new AppView();

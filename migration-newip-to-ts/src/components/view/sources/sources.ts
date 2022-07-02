@@ -4,7 +4,7 @@ export interface SourcesInterface {
     draw(data: ISources[]): void;
 }
 
-export interface ISources {
+export type ISources = {
     id: string;
     name: string;
     description: string;
@@ -12,7 +12,7 @@ export interface ISources {
     language: string;
     country: string;
     url: string;
-}
+};
 
 class Sources implements SourcesInterface {
     draw(data: ISources[]) {
@@ -23,7 +23,7 @@ class Sources implements SourcesInterface {
             if (sourceItemTemp) {
                 const sourceClone = <HTMLTemplateElement>sourceItemTemp.content.cloneNode(true);
                 const sourceItemName = sourceClone.querySelector('.source__item-name');
-                sourceItemName ? (sourceItemName.textContent = item.name) : null;
+                if (sourceItemName) sourceItemName.textContent = item.name;
                 sourceClone.querySelector('.source__item')?.setAttribute('data-source-id', item.id);
 
                 fragment.append(sourceClone);

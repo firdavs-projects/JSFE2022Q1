@@ -4,12 +4,12 @@ export interface NewsInterface {
     draw(data: INews[]): void;
 }
 
-export interface ISourceNews {
+export type ISourceNews = {
     id: string;
     name: string;
-}
+};
 
-export interface INews {
+export type INews = {
     author: string;
     content: string;
     description: string;
@@ -18,7 +18,7 @@ export interface INews {
     title: string;
     url: string;
     urlToImage: string;
-}
+};
 
 class News implements NewsInterface {
     draw(data: INews[]) {

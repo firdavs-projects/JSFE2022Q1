@@ -2,27 +2,32 @@ import AppLoader from './appLoader';
 import { IResponse } from './loader';
 
 export interface IAppController {
-    getSources(callback: (data: Pick<IResponse, 'sources'>) => void): void;
-    getNews(e: MouseEvent, callback: (data: Pick<IResponse, 'articles'>) => void): void;
+    getSources(callback: (data: Pick<IResponse, DataType.sources>) => void): void;
+    getNews(e: MouseEvent, callback: (data: Pick<IResponse, DataType.articles>) => void): void;
+}
+
+export enum DataType {
+    sources = 'sources',
+    articles = 'articles',
 }
 
 class AppController extends AppLoader implements IAppController {
-    getSources(callback: (data: Pick<IResponse, 'sources'>) => void) {
+    getSources(callback: (data: Pick<IResponse, DataType.sources>) => void) {
         super.getResp(
             {
-                endpoint: 'sources',
+                endpoint: DataType.sources,
             },
             callback
         );
     }
 
-    getNews(e: MouseEvent, callback: (data: Pick<IResponse, 'articles'>) => void) {
+    getNews(e: MouseEvent, callback: (data: Pick<IResponse, DataType.articles>) => void) {
         let target = <HTMLElement>e.target;
         const newsContainer = <HTMLElement>e.currentTarget;
 
         while (target !== newsContainer && target) {
             if (target.classList.contains('source__item')) {
-                const sourceId = target.getAttribute('data-source-id');
+                const sourceId: string = target.getAttribute('data-source-id') || '';
                 if (newsContainer?.getAttribute('data-source') !== sourceId) {
                     newsContainer.setAttribute('data-source', `${sourceId}`);
                     super.getResp(
