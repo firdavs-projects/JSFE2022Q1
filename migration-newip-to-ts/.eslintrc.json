@@ -1,7 +1,15 @@
 {
-    "plugins": ["prettier", "import"],
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint",
+        "prettier",
+        "import"
+    ],
     "extends": [
-        "plugin:prettier/recommended",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
         "prettier"
     ],
     "parserOptions": {
@@ -14,8 +22,10 @@
         "node": true
     },
     "rules": {
-        "no-debugger": "off",
-        "no-console": 0,
-        "class-methods-use-this": "off"
+        "prettier/prettier": "warn",
+        "no-debugger": "warn",
+        "no-console": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "@typescript-eslint/no-explicit-any": "warn"
     }
 }
