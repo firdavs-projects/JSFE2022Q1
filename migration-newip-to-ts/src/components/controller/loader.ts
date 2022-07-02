@@ -41,8 +41,8 @@ class Loader implements ILoader {
 
     getResp(
         { endpoint, options = {} }: IParams,
-        callback = (_: Pick<IResponse, DataType>): void => {
-            console.error('No callback for GET response');
+        callback = (data: Pick<IResponse, DataType>): void => {
+            console.error('No callback for GET response', data);
         }
     ) {
         this.load('GET', endpoint, callback, options);
