@@ -27,6 +27,10 @@ class AppController extends AppLoader implements IAppController {
 
         while (target !== newsContainer && target) {
             if (target.classList.contains('source__item')) {
+                const parent = <HTMLElement>target.parentElement;
+                const sources = parent.querySelectorAll('.source__item');
+                sources.forEach((source) => source.classList.remove('active'));
+                target.classList.add('active');
                 const sourceId: string = target.getAttribute('data-source-id') || '';
                 if (newsContainer?.getAttribute('data-source') !== sourceId) {
                     newsContainer.setAttribute('data-source', `${sourceId}`);

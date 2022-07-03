@@ -30,7 +30,12 @@ class Sources implements SourcesInterface {
             }
         });
 
-        document.querySelector('.sources')?.append(fragment);
+        const sources = document.querySelector('.sources');
+        sources?.append(fragment);
+
+        const firstSource: HTMLElement | null | undefined = <HTMLElement>sources?.firstElementChild;
+        if (firstSource) firstSource.click();
+        firstSource.classList.add('active');
     }
 }
 

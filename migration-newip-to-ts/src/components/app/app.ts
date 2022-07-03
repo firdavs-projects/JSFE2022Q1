@@ -21,8 +21,6 @@ class App implements IApp {
             );
         }
         this.controller.getSources((data) => this.view.drawSources(data));
-        const firstSource: HTMLElement | null = document.querySelector('.source__item');
-        if (firstSource) firstSource.click();
     }
 }
 
