@@ -26,8 +26,6 @@
     cursor: pointer;
 }
 
-.source__item:hover,
-.source__item:focus,
 .source__item.active {
     border-color: orange;
     color: orange;

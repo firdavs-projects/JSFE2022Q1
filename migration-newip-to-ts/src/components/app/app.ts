@@ -7,13 +7,22 @@ export interface IApp {
 
 class App implements IApp {
     private controller: IAppController;
-    public view: IAppView;
+    private view: IAppView;
     constructor() {
         this.controller = new AppController();
         this.view = new AppView();
     }
+    
+    private setFooterYear() {
+        const created = document.getElementById('created');
+        const currentYear = new Date().getFullYear();
+        if (created && created.innerText === `${currentYear}`) return;
+        const current = document.getElementById('current');
+        if (current) current.innerText = ` - ${currentYear}`;
+    }
 
     start() {
+        this.setFooterYear();
         const sources: HTMLElement | null = document.querySelector('.sources');
         if (sources) {
             sources.addEventListener('click', (e: MouseEvent) =>
