@@ -25,6 +25,7 @@
         "prettier/prettier": "error",
         "no-debugger": "error",
         "@typescript-eslint/ban-ts-comment": "error",
-        "@typescript-eslint/no-explicit-any": "error"
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-var-requires": "off"
     }
 }

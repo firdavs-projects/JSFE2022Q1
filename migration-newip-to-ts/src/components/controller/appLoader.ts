@@ -1,7 +1,7 @@
 import Loader from './loader';
 
-const BASE_LINK = 'https://newsapi.org/v2/';
-const API_KEY = '597c32c981b8463e92e2c8d6ec615f66';
+const BASE_LINK = 'https://nodenews.herokuapp.com/'; // https://newsapi.org/v2/
+const API_KEY = '3e0051a0449244e4a8b52db30a0af781';
 
 class AppLoader extends Loader {
     constructor() {

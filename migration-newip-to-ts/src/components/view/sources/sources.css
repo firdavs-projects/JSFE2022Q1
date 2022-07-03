@@ -6,6 +6,10 @@
     overflow: auto;
     align-items: center;
     font: 300 1em 'Fira Sans', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
 }
 
 .source__item {

@@ -35,7 +35,10 @@ class News implements NewsInterface {
 
                 const newsMetaPhoto = newsClone.querySelector<HTMLElement>('.news__meta-photo');
                 if (newsMetaPhoto)
-                    newsMetaPhoto.style.backgroundImage = `url(${item.urlToImage || 'img/news_placeholder.jpg'})`;
+                    newsMetaPhoto.style.backgroundImage = `url(${
+                        item.urlToImage ||
+                        `https://via.placeholder.com/600x400.png?text=${item.source.name.replace(' ', '+')}`
+                    })`;
 
                 const newsMetaAuthor = newsClone.querySelector('.news__meta-author');
                 if (newsMetaAuthor) newsMetaAuthor.textContent = item.author || item.source.name;

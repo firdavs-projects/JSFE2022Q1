@@ -1,6 +1,6 @@
 body {
-    color: #fff;
-    background: #17181c;
+    color: #222222;
+    background: #fff;
     font-family: sans-serif;
 }
 
@@ -14,22 +14,29 @@ header h1 {
 }
 
 footer {
+    padding: 10px 30px;
     height: 100px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
-footer .copyright {
+footer {
     font-size: 14px;
     color: #333;
     text-align: center;
 }
-footer .copyright a {
+footer a {
     color: #444;
 }
-footer .copyright a:hover {
+footer a:hover {
     color: #555;
 }
 footer .copyright:before {
     content: '©';
+}
+
+footer p {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }

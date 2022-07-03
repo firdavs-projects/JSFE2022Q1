@@ -73,7 +73,7 @@ class Loader implements ILoader {
             .then(this.errorHandler)
             .then((res: Response): Promise<IResponse> => res.json())
             .then((data: IResponse): void => callback(data))
-            .catch((err) => console.error(err));
+            .catch((err: Error) => console.error(err));
     }
 }
 
