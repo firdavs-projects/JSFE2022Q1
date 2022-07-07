@@ -14,7 +14,7 @@ export class AppView implements IAppView {
     }
 
     public drawNews(data: Pick<IResponse, DataType.articles>) {
-        const values = data?.articles ? data.articles : [];
+        const values = Array.isArray(data?.articles) ? data.articles : [];
         this.news.draw(values);
     }
 
