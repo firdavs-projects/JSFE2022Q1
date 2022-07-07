@@ -1,7 +1,7 @@
 import { ILoader, DataTypes, IResponse, IParams, IOption, IOptions, StatusCodes } from '../../types/loader';
 
 class Loader implements ILoader {
-    public constructor(private baseLink: string, private options: Partial<IOptions>) {}
+    public constructor(private readonly baseLink: string, private readonly options: Partial<IOptions>) {}
 
     public getResp(
         { endpoint, options = {} }: IParams<Partial<IOptions>>,
@@ -12,7 +12,7 @@ class Loader implements ILoader {
         this.load('GET', endpoint, callback, options);
     }
 
-    public errorHandler(res: Response): Response {
+    private static errorHandler(res: Response): Response {
         if (!res.ok) {
             if (res.status === StatusCodes.unauthorized || res.status === StatusCodes.notFound) {
                 console.log(`Sorry, but there is ${res.status} error: ${res.statusText}`);
@@ -22,7 +22,7 @@ class Loader implements ILoader {
         return res;
     }
 
-    public makeUrl(options: Partial<IOptions>, endpoint: string): string {
+    private makeUrl(options: Partial<IOptions>, endpoint: string): string {
         const urlOptions: Partial<IOptions> = { ...this.options, ...options };
         let url = `${this.baseLink}${endpoint}?`;
 
@@ -33,14 +33,14 @@ class Loader implements ILoader {
         return url.slice(0, -1);
     }
 
-    public load(
+    private load(
         method: string,
         endpoint: string,
         callback: (data: IResponse) => void,
         options: Partial<IOptions> = {}
     ): void {
         fetch(this.makeUrl(options, endpoint), { method })
-            .then(this.errorHandler)
+            .then(Loader.errorHandler)
             .then((res: Response): Promise<IResponse> => res.json())
             .then((data: IResponse): void => callback(data))
             .catch((err: Error): void => console.error(err));

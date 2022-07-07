@@ -3,9 +3,6 @@ import { INews } from './news';
 
 export interface ILoader {
     getResp(params: IParams<Partial<IOptions>>, callback: (data: Pick<IResponse, DataTypes>) => void): void;
-    errorHandler(res: Response): Response | ErrorEvent;
-    makeUrl(options: IOptions, endpoint: string): string;
-    load(method: string, endpoint: string, callback: (data: IResponse) => void, options: IOptions): void;
 }
 
 export type IParams<T> = {
