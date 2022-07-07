@@ -15,7 +15,9 @@ class News implements NewsInterface {
             if (newsItemTemp) {
                 const newsClone = <HTMLTemplateElement>newsItemTemp.content.cloneNode(true);
 
-                if (idx % 2) newsClone.querySelector('.news__item')?.classList.add('alt');
+                if (idx % 2) {
+                    newsClone.querySelector('.news__item')?.classList.add('alt');
+                }
 
                 const newsMetaPhoto = newsClone.querySelector<HTMLElement>('.news__meta-photo');
                 if (newsMetaPhoto) {
