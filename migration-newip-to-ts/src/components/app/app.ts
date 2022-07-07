@@ -1,28 +1,23 @@
-import AppController, { IAppController } from '../controller/controller';
-import { AppView, IAppView } from '../view/appView';
-
-export interface IApp {
-    start(): void;
-}
+import AppController from '../controller/controller';
+import { AppView } from '../view/appView';
+import { IApp, IAppController, IAppView } from '../../types/app';
+import { setFooterYear } from '../../utils';
 
 class App implements IApp {
+    private static _instance: App;
     private controller: IAppController;
     private view: IAppView;
-    constructor() {
+    private constructor() {
         this.controller = new AppController();
         this.view = new AppView();
     }
-    
-    private setFooterYear() {
-        const created = document.getElementById('created');
-        const currentYear = new Date().getFullYear();
-        if (created && created.innerText === `${currentYear}`) return;
-        const current = document.getElementById('current');
-        if (current) current.innerText = ` - ${currentYear}`;
+
+    public static get Instance() {
+        return this._instance || (this._instance = new this());
     }
 
     start() {
-        this.setFooterYear();
+        setFooterYear();
         const sources: HTMLElement | null = document.querySelector('.sources');
         if (sources) {
             sources.addEventListener('click', (e: MouseEvent) =>
@@ -33,4 +28,5 @@ class App implements IApp {
     }
 }
 
-export default App;
+const appInstance = App.Instance;
+export default appInstance;

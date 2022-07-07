@@ -1,5 +1,4 @@
-import App from './components/app/app';
 import './global.css';
+import appInstance from './components/app/app';
 
-const app = new App();
-app.start();
+appInstance.start();

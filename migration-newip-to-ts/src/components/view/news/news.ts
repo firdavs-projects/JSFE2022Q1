@@ -1,28 +1,12 @@
 import './news.css';
+import { NewsInterface, INews } from '../../../types/news';
+import { generatePlaceholder } from '../../../utils';
 
-export interface NewsInterface {
-    draw(data: INews[]): void;
-}
-
-export type ISourceNews = {
-    id: string;
-    name: string;
-};
-
-export type INews = {
-    author: string;
-    content: string;
-    description: string;
-    publishedAt: string;
-    source: ISourceNews;
-    title: string;
-    url: string;
-    urlToImage: string;
-};
+const LIMIT = 10;
 
 class News implements NewsInterface {
     draw(data: INews[]) {
-        const news = data.length >= 10 ? data.filter((_item, idx) => idx < 10) : data;
+        const news = data.length >= LIMIT ? data.filter((_item, idx) => idx < LIMIT) : data;
 
         const fragment = document.createDocumentFragment();
         const newsItemTemp: HTMLTemplateElement | null = document.querySelector('#newsItemTemp');
@@ -34,37 +18,50 @@ class News implements NewsInterface {
                 if (idx % 2) newsClone.querySelector('.news__item')?.classList.add('alt');
 
                 const newsMetaPhoto = newsClone.querySelector<HTMLElement>('.news__meta-photo');
-                if (newsMetaPhoto)
+                if (newsMetaPhoto) {
                     newsMetaPhoto.style.backgroundImage = `url(${
-                        item.urlToImage ||
-                        `https://via.placeholder.com/600x400.png?text=${item.source.name.replace(' ', '+')}`
+                        item.urlToImage || generatePlaceholder(item.source.name)
                     })`;
+                }
 
                 const newsMetaAuthor = newsClone.querySelector('.news__meta-author');
-                if (newsMetaAuthor) newsMetaAuthor.textContent = item.author || item.source.name;
+                if (newsMetaAuthor) {
+                    newsMetaAuthor.textContent = item.author || item.source.name;
+                }
 
                 const newsMetaDate = newsClone.querySelector('.news__meta-date');
-                if (newsMetaDate)
+                if (newsMetaDate) {
                     newsMetaDate.textContent = item.publishedAt.slice(0, 10).split('-').reverse().join('-');
+                }
 
                 const newsDescriptionTitle = newsClone.querySelector('.news__description-title');
-                if (newsDescriptionTitle) newsDescriptionTitle.textContent = item.title;
+                if (newsDescriptionTitle) {
+                    newsDescriptionTitle.textContent = item.title;
+                }
 
                 const newsDescriptionSource = newsClone.querySelector('.news__description-source');
-                if (newsDescriptionSource) newsDescriptionSource.textContent = item.source.name;
+                if (newsDescriptionSource) {
+                    newsDescriptionSource.textContent = item.source.name;
+                }
 
                 const newsDescriptionContent = newsClone.querySelector('.news__description-content');
-                if (newsDescriptionContent) newsDescriptionContent.textContent = item.description;
+                if (newsDescriptionContent) {
+                    newsDescriptionContent.textContent = item.description;
+                }
 
                 const newsReadMore = newsClone.querySelector('.news__read-more a');
-                if (newsReadMore) newsReadMore.setAttribute('href', item.url);
+                if (newsReadMore) {
+                    newsReadMore.setAttribute('href', item.url);
+                }
 
                 fragment.append(newsClone);
             }
         });
         const newsList = document.querySelector('.news');
-        if (newsList) newsList.innerHTML = '';
-        newsList?.appendChild(fragment);
+        if (newsList) {
+            newsList.innerHTML = '';
+            newsList?.appendChild(fragment);
+        }
     }
 }
 

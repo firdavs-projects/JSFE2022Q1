@@ -1,12 +1,9 @@
-import News, { NewsInterface } from './news/news';
-import Sources, { SourcesInterface } from './sources/sources';
-import { IResponse } from '../controller/loader';
-import { DataType } from '../controller/controller';
-
-export interface IAppView {
-    drawSources(data: Pick<IResponse, DataType.sources>): void;
-    drawNews(data: Pick<IResponse, DataType.articles>): void;
-}
+import News from './news/news';
+import Sources from './sources/sources';
+import { NewsInterface } from '../../types/news';
+import { SourcesInterface } from '../../types/sources';
+import { IAppView } from '../../types/app';
+import { DataType, IResponse } from '../../types/loader';
 
 export class AppView implements IAppView {
     public news: NewsInterface;
@@ -22,7 +19,7 @@ export class AppView implements IAppView {
     }
 
     drawSources(data: Pick<IResponse, DataType.sources>) {
-        const values = data?.sources ? data.sources : [];
+        const values = Array.isArray(data?.sources) ? data.sources : [];
         this.sources.draw(values);
     }
 }

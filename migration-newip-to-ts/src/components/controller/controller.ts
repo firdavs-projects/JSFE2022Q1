@@ -1,15 +1,6 @@
 import AppLoader from './appLoader';
-import { IResponse } from './loader';
-
-export interface IAppController {
-    getSources(callback: (data: Pick<IResponse, DataType.sources>) => void): void;
-    getNews(e: MouseEvent, callback: (data: Pick<IResponse, DataType.articles>) => void): void;
-}
-
-export enum DataType {
-    sources = 'sources',
-    articles = 'articles',
-}
+import { DataType, IResponse } from '../../types/loader';
+import { IAppController } from '../../types/app';
 
 class AppController extends AppLoader implements IAppController {
     getSources(callback: (data: Pick<IResponse, DataType.sources>) => void) {
