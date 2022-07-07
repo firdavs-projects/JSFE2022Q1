@@ -29,6 +29,7 @@
         "@typescript-eslint/no-var-requires": "off",
         "curly": "error",
         "prefer-const": "error",
-        "linebreak-style": "error"
+        "linebreak-style": "error",
+        "accessibility": "explicit"
     }
 }
