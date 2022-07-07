@@ -3,7 +3,7 @@ import { DataType, IResponse } from '../../types/loader';
 import { IAppController } from '../../types/app';
 
 class AppController extends AppLoader implements IAppController {
-    getSources(callback: (data: Pick<IResponse, DataType.sources>) => void) {
+    public getSources(callback: (data: Pick<IResponse, DataType.sources>) => void) {
         super.getResp(
             {
                 endpoint: DataType.sources,
@@ -12,7 +12,7 @@ class AppController extends AppLoader implements IAppController {
         );
     }
 
-    getNews(e: MouseEvent, callback: (data: Pick<IResponse, DataType.articles>) => void) {
+    public getNews(e: MouseEvent, callback: (data: Pick<IResponse, DataType.articles>) => void) {
         let target = <HTMLElement>e.target;
         const newsContainer = <HTMLElement>e.currentTarget;
 

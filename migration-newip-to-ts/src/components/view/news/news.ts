@@ -5,7 +5,7 @@ import { generatePlaceholder } from '../../../utils';
 const LIMIT = 10;
 
 class News implements NewsInterface {
-    draw(data: INews[]) {
+    public draw(data: INews[]) {
         const news = data.length >= LIMIT ? data.filter((_item, idx) => idx < LIMIT) : data;
 
         const fragment = document.createDocumentFragment();

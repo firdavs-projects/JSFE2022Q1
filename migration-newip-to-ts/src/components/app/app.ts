@@ -16,7 +16,7 @@ class App implements IApp {
         return this._instance || (this._instance = new this());
     }
 
-    start() {
+    public start() {
         setFooterYear();
         const sources: HTMLElement | null = document.querySelector('.sources');
         if (sources) {
