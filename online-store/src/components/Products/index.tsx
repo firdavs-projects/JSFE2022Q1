@@ -11,8 +11,8 @@ export interface ProductsProps {
 
 const Products: FC<ProductsProps> = ({products, cart, handleAddToCart}) => {
     return (
-        <Container fluid className="py-5 min-vh-100">
-            <Row xs={2} md={3} lg={5}>
+        <Container fluid className="py-5">
+            <Row xs={2} lg={4} xl={6}>
                 {products.map(product => (
                     <Col key={product.id}>
                         <Product handleAddToCart={handleAddToCart} product={product} cart={cart}/>

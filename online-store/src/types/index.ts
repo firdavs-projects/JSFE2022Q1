@@ -18,10 +18,21 @@ export enum Manufacturers {
 
 export enum Currency {
     usd = '$',
-    tjs = 'с.',
 }
 
 export enum localStorageKeys {
     products = 'products',
     cart = 'cart',
+}
+
+export enum Sort {
+    default = 'default',
+    priceAsc = 'priceAsc',
+    priceDesc = 'priceDesc',
+    nameAsc = 'nameAsc',
+    nameDesc = 'nameDesc',
+    countAsc = 'countAsc',
+    countDesc = 'countDesc',
+    yearAsc = 'yearAsc',
+    yearDesc = 'yearDesc',
 }

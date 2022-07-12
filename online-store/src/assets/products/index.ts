@@ -7,19 +7,19 @@ export const smartphones: Smartphone[] = [
     {
         id: 1,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 9449.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,
         count: 10,
         manufacturer: Manufacturers.samsung,
-        year: 2022,
+        year: 2012,
         camera: 12,
     },
     {
         id: 2,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 9.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,
@@ -31,7 +31,7 @@ export const smartphones: Smartphone[] = [
     {
         id: 3,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 199.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,
@@ -43,7 +43,7 @@ export const smartphones: Smartphone[] = [
     {
         id: 4,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 989.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,
@@ -55,7 +55,7 @@ export const smartphones: Smartphone[] = [
     {
         id: 5,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 9999.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,
@@ -67,7 +67,7 @@ export const smartphones: Smartphone[] = [
     {
         id: 6,
         name: 'Samsung Galaxy S20',
-        price: 999.99,
+        price: 99.99,
         currency: Currency.usd,
         color: Colors.black,
         image: s10,

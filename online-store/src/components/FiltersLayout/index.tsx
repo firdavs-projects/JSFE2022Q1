@@ -8,7 +8,7 @@ export interface FiltersLayoutProps {
 const FiltersLayout: FC<FiltersLayoutProps> = ({children}) => {
     return (
         <Container fluid>
-            <Row xs={1} md={2} lg={3}>
+            <Row xs={1} lg={2} xl={3}>
                 {children}
             </Row>
         </Container>
