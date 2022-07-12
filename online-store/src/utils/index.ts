@@ -46,3 +46,13 @@ export const sortProducts = (products: Smartphone[], sort: Sort): Smartphone[] =
     }
     return newProducts;
 }
+
+export const calculateMinMax = (products: Smartphone[]): { min: number, max: number } => {
+    const min = products.reduce((min, product) => Math.min(min, product.price), products[0].price);
+    const max = products.reduce((max, product) => Math.max(max, product.price), products[0].price);
+    return {min, max};
+}
+
+export const findPriceByPercent = (min: number, max: number, percent: number): number => {
+    return Math.round(min + (max - min) * percent / 100);
+}

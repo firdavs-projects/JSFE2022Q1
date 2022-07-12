@@ -7,7 +7,7 @@ export interface FiltersLayoutProps {
 
 const FiltersLayout: FC<FiltersLayoutProps> = ({children}) => {
     return (
-        <Container fluid>
+        <Container fluid className="my-4">
             <Row xs={1} lg={2} xl={3}>
                 {children}
             </Row>

@@ -45,9 +45,7 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange}) => {
                     </Form.Group>
                 </Form>
             </Card.Body>
-
         </Card>
-
     );
 };
 

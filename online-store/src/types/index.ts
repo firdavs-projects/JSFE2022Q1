@@ -6,8 +6,8 @@ export enum Colors {
     silver = 'Серебряный',
     red = 'Красный',
     blue = 'Синий',
-    green = 'Зеленый',
     yellow = 'Желтый',
+    orange = 'Оранжевый',
 }
 
 export enum Manufacturers {
