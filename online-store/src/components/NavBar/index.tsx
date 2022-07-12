@@ -1,13 +1,16 @@
 import React, {FC} from 'react';
-import {Container, Navbar} from "react-bootstrap";
+import {Button, Container, Navbar} from "react-bootstrap";
+import {Icon} from "ts-react-feather-icons";
 
 export interface NavbarProps {
     title: string;
+    onClick: () => void;
+    count: number;
 }
 
-const NavBar: FC<NavbarProps> = ({title}) => {
+const NavBar: FC<NavbarProps> = ({title, count, onClick}) => {
     return (
-        <header>
+        <header className="position-sticky top-0" style={{zIndex: 10}}>
             <Navbar bg="dark" variant="dark">
                 <Container>
                     <Navbar.Brand href="/">Online Store</Navbar.Brand>
@@ -15,7 +18,9 @@ const NavBar: FC<NavbarProps> = ({title}) => {
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Navbar.Text>
-                            Cart
+                            <Button onClick={onClick} variant="outline-warning" className="px-2 py-1">
+                                <Icon name="shopping-cart" color="orange" size={16}/> {count}
+                            </Button>
                         </Navbar.Text>
                     </Navbar.Collapse>
                 </Container>

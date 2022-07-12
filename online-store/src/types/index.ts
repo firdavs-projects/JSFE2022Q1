@@ -20,3 +20,8 @@ export enum Currency {
     usd = '$',
     tjs = 'с.',
 }
+
+export enum localStorageKeys {
+    products = 'products',
+    cart = 'cart',
+}

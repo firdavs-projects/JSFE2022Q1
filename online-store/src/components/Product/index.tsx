@@ -1,0 +1,42 @@
+import React, {FC} from 'react';
+import {Smartphone} from "../../types/Smartphone";
+import {Button, Card, Row} from "react-bootstrap";
+import {Icon} from 'ts-react-feather-icons';
+
+export interface ProductProps {
+    product: Smartphone;
+    cart: Smartphone[];
+    handleAddToCart: (product: Smartphone) => void;
+}
+
+const Product: FC<ProductProps> = ({product, cart, handleAddToCart}) => {
+    const isInCart = cart.some(item => item.id === product.id);
+    const onCartClick = (): void => handleAddToCart(product);
+    return (
+        <Card className="mb-4 w-100 hover-shadow">
+            <Card.Img className="w-100 hover-shadow" variant="top" src={product.image} alt={product.name}/>
+            <Card.Body>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Text className="text-success">
+                    <small>{product.price} {product.currency}</small>
+                </Card.Text>
+                <Card.Text className="text-success">
+                    <Button
+                        variant={isInCart ? "warning" : "outline-warning"}
+                        className="px-2 py-1 w-100"
+                        onClick={onCartClick}
+                    >
+                        <small style={{color: isInCart ? "white" : "currentcolor"}}>
+                            {isInCart ? "Добавлен " : "Добавить "}
+                        </small>
+                        <Icon name="shopping-cart" color={isInCart ? "white" : "orange"} size={16}/>
+                    </Button>
+                </Card.Text>
+                <Card.Text className="mb-0"><small>Производитель: <b>{product.manufacturer}</b></small></Card.Text>
+                <Card.Text className="mb-0"><small>Основная камера: <b>{product.camera} Мп</b></small></Card.Text>
+            </Card.Body>
+        </Card>
+    );
+};
+
+export default Product;
