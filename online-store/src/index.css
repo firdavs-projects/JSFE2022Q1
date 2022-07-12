@@ -21,3 +21,11 @@ code {
 .card:hover{
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
+.form-control:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: yellow;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(255, 128, 0, 0.25);
+}

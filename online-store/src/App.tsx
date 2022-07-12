@@ -6,6 +6,8 @@ import {smartphones} from "./assets/products";
 import CartModal from "./components/CartModal";
 import {localStorageGeneric} from "./utils";
 import {localStorageKeys} from "./types";
+import Search from "./components/Search";
+import FiltersLayout from "./components/FiltersLayout";
 
 function App() {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -39,14 +41,22 @@ function App() {
         }
     }
 
+    const handleSearch = (search: string): void => {
+        const newProducts = smartphones.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+        setProducts(newProducts);
+    }
+
     return (
         <MainLayout
             title="Смартфоны"
             cartCount={cart.length}
             cartOnClick={handleShow}
         >
-            <CartModal cart={cart} show={show} handleClose={handleClose}/>
+            <FiltersLayout>
+                <Search onInputChange={handleSearch}/>
+            </FiltersLayout>
             <Products products={products} cart={cart} handleAddToCart={handleAddToCart}/>
+            <CartModal cart={cart} show={show} handleClose={handleClose}/>
         </MainLayout>
     );
 }
