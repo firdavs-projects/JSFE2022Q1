@@ -2,6 +2,7 @@
   "name": "online-store",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://rolling-scopes-school.github.io/firdavs-projects-JSFE2022Q1/online-store",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -18,6 +19,7 @@
     "react-hot-toast": "^2.2.0",
     "react-range-slider-ts": "^1.1.1",
     "react-scripts": "5.0.1",
+    "save-dev": "^0.0.1-security",
     "ts-react-feather-icons": "^1.0.0",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
@@ -28,7 +30,9 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +59,7 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0"
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "gh-pages": "^4.0.0"
   }
 }
