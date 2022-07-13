@@ -4,21 +4,24 @@ import Products from "./components/Products";
 import {Smartphone} from "./types/Smartphone";
 import {smartphones} from "./assets/products";
 import CartModal from "./components/CartModal";
-import {calculateMinMax, localStorageGeneric, sortProducts} from "./utils";
-import {localStorageKeys, Sort} from "./types";
+import {calculateMinMaxFromArray, localStorageGeneric, sortProducts} from "./utils";
+import {localStorageKeys, RangeType, Sort} from "./types";
 import Search from "./components/Search";
 import FiltersLayout from "./components/FiltersLayout";
-import {Col} from "react-bootstrap";
+import {Card, Col} from "react-bootstrap";
 import Range from "./components/Range";
 import {toast, Toaster} from 'react-hot-toast';
 
 function App() {
     const [products, setProducts] = useState<Smartphone[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [, setIsLoading] = useState<boolean>(true);
     const [cart, setCart] = useState<Smartphone[]>([]);
 
     const [minPrice, setMinPrice] = useState<number>(0);
-    const [maxPrice, setMaxPrice] = useState<number>(100);
+    const [maxPrice, setMaxPrice] = useState<number>(0);
+
+    const [minCount, setMinCount] = useState<number>(0);
+    const [maxCount, setMaxCount] = useState<number>(0);
 
     const [show, setShow] = useState<boolean>(false);
     const handleClose = (): void => setShow(false);
@@ -33,9 +36,12 @@ function App() {
     const getProducts = (): void => {
         setIsLoading(true);
         setProducts(smartphones);
-        const {min, max} = calculateMinMax(smartphones);
-        setMinPrice(min);
-        setMaxPrice(max);
+        const {min: minPrice, max: maxPrice} = calculateMinMaxFromArray(smartphones.map(s => s.price));
+        const {min: minCount, max: maxCount} = calculateMinMaxFromArray(smartphones.map(s => s.count));
+        setMinPrice(minPrice);
+        setMaxPrice(maxPrice);
+        setMinCount(minCount);
+        setMaxCount(maxCount);
         setIsLoading(false);
     }
 
@@ -67,8 +73,8 @@ function App() {
         setProducts(sortProducts(products, sort));
     }
 
-    const handleRange = (min: number, max: number): void => {
-        const newProducts = smartphones.filter(p => p.price >= min && p.price <= max);
+    const handleRange = (min: number, max: number, type: RangeType): void => {
+        const newProducts = smartphones.filter(p => p[type] >= min && p[type] <= max);
         setProducts(newProducts);
     }
 
@@ -79,8 +85,33 @@ function App() {
             cartOnClick={handleShow}
         >
             <FiltersLayout>
-                <Col><Search onSortChange={handleSort} onInputChange={handleSearch}/></Col>
-                <Col><Range onChange={handleRange} maxValue={maxPrice} minValue={minPrice}/></Col>
+                <Col>
+                    <Card className='h-250'>
+                        <Card.Body>
+                            <Search onSortChange={handleSort} onInputChange={handleSearch}/>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col >
+                    <Card className='h-250'>
+                        <Card.Body>
+                            <Range
+                                type={RangeType.price}
+                                onChange={handleRange}
+                                maxValue={maxPrice}
+                                minValue={minPrice}
+                                title="По цене"
+                            />
+                            <Range
+                                type={RangeType.count}
+                                onChange={handleRange}
+                                maxValue={maxCount}
+                                minValue={minCount}
+                                title="По количеству на складе"
+                            />
+                        </Card.Body>
+                    </Card>
+                </Col>
             </FiltersLayout>
             <Products products={products} cart={cart} handleAddToCart={handleAddToCart}/>
             <CartModal onRemoveFromCart={handleRemoveFromCart} cart={cart} show={show} handleClose={handleClose}/>

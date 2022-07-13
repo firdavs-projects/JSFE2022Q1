@@ -36,3 +36,9 @@ export enum Sort {
     yearAsc = 'yearAsc',
     yearDesc = 'yearDesc',
 }
+
+export enum RangeType {
+    price = 'price',
+    year = 'year',
+    count = 'count',
+}
