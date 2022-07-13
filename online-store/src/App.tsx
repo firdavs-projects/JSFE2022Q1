@@ -11,6 +11,7 @@ import FiltersLayout from "./components/FiltersLayout";
 import {Card, Col} from "react-bootstrap";
 import Range from "./components/Range";
 import {toast, Toaster} from 'react-hot-toast';
+import FilterContainer from "./components/FilterContainer";
 
 function App() {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -106,48 +107,43 @@ function App() {
             cartOnClick={handleShow}
         >
             <FiltersLayout>
-                <Col>
-                    <Card className='h-250'>
-                        <Card.Body>
-                            <Search
-                                onSortChange={handleSort}
-                                onInputChange={handleSearch}
-                            />
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col>
-                    <Card className='h-250'>
-                        <Card.Body>
-                            <Range
-                                type={RangeType.price}
-                                onChange={handleRange}
-                                maxValue={maxPrice}
-                                minValue={minPrice}
-                                title="По цене"
-                            />
-                            <Range
-                                type={RangeType.count}
-                                onChange={handleRange}
-                                maxValue={maxCount}
-                                minValue={minCount}
-                                title="По количеству на складе"
-                            />
-                        </Card.Body>
-                    </Card>
-                </Col>
+                <FilterContainer>
+                    <Search
+                        onSortChange={handleSort}
+                        onInputChange={handleSearch}
+                    />
+                </FilterContainer>
+                <FilterContainer>
+                    <Range
+                        type={RangeType.price}
+                        onChange={handleRange}
+                        maxValue={maxPrice}
+                        minValue={minPrice}
+                        title="По цене"
+                    />
+                    <Range
+                        type={RangeType.count}
+                        onChange={handleRange}
+                        maxValue={maxCount}
+                        minValue={minCount}
+                        title="По количеству на складе"
+                    />
+                </FilterContainer>
             </FiltersLayout>
+
             <Products
                 products={products}
                 cart={cart}
                 handleAddToCart={handleAddToCart}
             />
+
             <CartModal
                 onRemoveFromCart={handleRemoveFromCart}
                 cart={cart}
                 show={show}
                 handleClose={handleClose}
             />
+
             <Toaster/>
         </MainLayout>
     );
