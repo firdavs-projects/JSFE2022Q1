@@ -160,7 +160,7 @@ function App() {
                         title="По количеству на складе"
                     />
                 </FilterContainer>
-                <FilterContainer>
+                <FilterContainer lg={12}>
                     <h4>Характеристики</h4>
                     <Range
                         type={RangeType.year}

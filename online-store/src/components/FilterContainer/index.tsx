@@ -1,12 +1,15 @@
 import React, {FC} from 'react';
 import {Card, Col} from "react-bootstrap";
+
 interface FilterContainerProps {
     children: React.ReactNode;
+    lg?: number;
 }
-const FilterContainer: FC<FilterContainerProps> = ({children}) => {
+
+const FilterContainer: FC<FilterContainerProps> = ({children, lg}) => {
     return (
-        <Col>
-            <Card className='h-250'>
+        <Col lg={lg}>
+            <Card className='h-250 mt-4'>
                 <Card.Body>
                     {children}
                 </Card.Body>
