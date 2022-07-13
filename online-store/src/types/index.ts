@@ -1,4 +1,3 @@
-
 export enum Colors {
     black = 'Черный',
     white = 'Белый',
@@ -41,4 +40,16 @@ export enum RangeType {
     price = 'price',
     year = 'year',
     count = 'count',
+}
+
+type Range = {
+    min: number;
+    max: number;
+}
+
+export type FilterType = {
+    count: Range;
+    price: Range;
+    sort: Sort;
+    search: string;
 }

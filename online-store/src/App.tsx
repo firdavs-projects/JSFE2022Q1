@@ -5,7 +5,7 @@ import {Smartphone} from "./types/Smartphone";
 import {smartphones} from "./assets/products";
 import CartModal from "./components/CartModal";
 import {calculateMinMaxFromArray, localStorageGeneric, sortProducts} from "./utils";
-import {localStorageKeys, RangeType, Sort} from "./types";
+import {FilterType, localStorageKeys, RangeType, Sort} from "./types";
 import Search from "./components/Search";
 import FiltersLayout from "./components/FiltersLayout";
 import {Card, Col} from "react-bootstrap";
@@ -23,6 +23,13 @@ function App() {
     const [minCount, setMinCount] = useState<number>(0);
     const [maxCount, setMaxCount] = useState<number>(0);
 
+    const [filters, setFilters] = useState<FilterType>({
+        count: {min: 0, max: Infinity},
+        price: {min: 0, max: Infinity},
+        sort: Sort.default,
+        search: ''
+    });
+
     const [show, setShow] = useState<boolean>(false);
     const handleClose = (): void => setShow(false);
     const handleShow = (): void => setShow(true);
@@ -32,6 +39,10 @@ function App() {
         const localCart = localStorageGeneric<Smartphone[]>(localStorageKeys.cart)
         Array.isArray(localCart) && setCart(localCart);
     }, []);
+
+    useEffect((): void => {
+        setAllFilters();
+    }, [filters]);
 
     const getProducts = (): void => {
         setIsLoading(true);
@@ -65,16 +76,26 @@ function App() {
     }
 
     const handleSearch = (search: string): void => {
-        const newProducts = smartphones.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-        setProducts(newProducts);
+        setFilters({...filters, search});
     }
 
     const handleSort = (sort: Sort): void => {
-        setProducts(sortProducts(products, sort));
+        setFilters({...filters, sort});
     }
 
     const handleRange = (min: number, max: number, type: RangeType): void => {
-        const newProducts = smartphones.filter(p => p[type] >= min && p[type] <= max);
+        setFilters({...filters, [type]: {min, max}});
+    }
+
+    const setAllFilters = (): void => {
+        let newProducts = [...smartphones];
+        filters.count && (newProducts = newProducts
+            .filter(p => p.count >= filters.count.min && p.count <= filters.count.max));
+        filters.price && (newProducts = newProducts
+            .filter(p => p.price >= filters.price.min && p.price <= filters.price.max));
+        filters.sort && (newProducts = sortProducts(newProducts, filters.sort));
+        filters.search && (newProducts = newProducts
+            .filter(p => p.name.toLowerCase().includes(filters.search.toLowerCase())));
         setProducts(newProducts);
     }
 
@@ -88,11 +109,14 @@ function App() {
                 <Col>
                     <Card className='h-250'>
                         <Card.Body>
-                            <Search onSortChange={handleSort} onInputChange={handleSearch}/>
+                            <Search
+                                onSortChange={handleSort}
+                                onInputChange={handleSearch}
+                            />
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col >
+                <Col>
                     <Card className='h-250'>
                         <Card.Body>
                             <Range
@@ -113,8 +137,17 @@ function App() {
                     </Card>
                 </Col>
             </FiltersLayout>
-            <Products products={products} cart={cart} handleAddToCart={handleAddToCart}/>
-            <CartModal onRemoveFromCart={handleRemoveFromCart} cart={cart} show={show} handleClose={handleClose}/>
+            <Products
+                products={products}
+                cart={cart}
+                handleAddToCart={handleAddToCart}
+            />
+            <CartModal
+                onRemoveFromCart={handleRemoveFromCart}
+                cart={cart}
+                show={show}
+                handleClose={handleClose}
+            />
             <Toaster/>
         </MainLayout>
     );
