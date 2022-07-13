@@ -1,7 +1,6 @@
 import {Smartphone} from "../../types/Smartphone";
 import {Colors, Currency, Manufacturers} from "../../types";
 
-
 import s21 from '../images/1.png';
 import a03 from '../images/2.png';
 import s20 from '../images/3.png';
