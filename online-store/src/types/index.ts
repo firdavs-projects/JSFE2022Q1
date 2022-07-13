@@ -7,6 +7,7 @@ export enum Colors {
     blue = 'Синий',
     yellow = 'Желтый',
     orange = 'Оранжевый',
+    all = 'Все'
 }
 
 export enum Manufacturers {
@@ -50,6 +51,8 @@ type Range = {
 export type FilterType = {
     count: Range;
     price: Range;
+    year: Range;
+    colors: Colors[];
     sort: Sort;
     search: string;
 }

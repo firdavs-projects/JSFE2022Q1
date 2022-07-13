@@ -1,4 +1,4 @@
-import {Sort} from "../types";
+import {Colors, Sort} from "../types";
 import {Smartphone} from "../types/Smartphone";
 
 export const localStorageGeneric = <T>(key: string, value?: T): T | undefined => {
@@ -55,4 +55,21 @@ export const calculateMinMaxFromArray = (array: number[]): { min: number, max: n
 
 export const findCountByPercent = (min: number, max: number, percent: number): number => {
     return Math.round(min + (max - min) * percent / 100);
+}
+
+export const getColorName = (color: Colors): string => {
+    switch (color) {
+        case 'Красный':
+            return 'red';
+        case 'Синий':
+            return 'blue';
+        case 'Желтый':
+            return 'yellow';
+        case 'Оранжевый':
+            return 'orange';
+        case 'Белый':
+            return 'white';
+        default:
+            return '';
+    }
 }

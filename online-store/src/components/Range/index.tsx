@@ -61,8 +61,16 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type}) 
     }
 
     return (
-        <>
-            <Card.Title>{title}</Card.Title>
+        <div>
+            <Card.Title className="d-flex justify-content-between align-items-center">
+                {title}
+                <Button
+                    variant="warning"
+                    className="my-3"
+                    onClick={handleReset}
+                >
+                    <small>Сбросить</small>
+                </Button></Card.Title>
             <div className='App_slider'>
                 <div className="value">{findCountByPercent(minValue, maxValue, min)}</div>
                 <TwoSliders
@@ -79,14 +87,8 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type}) 
                 />
                 <div className="value">{findCountByPercent(minValue, maxValue, max)}</div>
             </div>
-            <Button
-                variant="warning"
-                className="my-3"
-                onClick={handleReset}
-            >
-                Сбросить
-            </Button>
-        </>
+
+        </div>
     );
 };
 

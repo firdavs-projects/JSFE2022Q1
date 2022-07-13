@@ -7,7 +7,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-main{
+main {
     min-height: calc(100vh - 146px);
 }
 
@@ -38,4 +38,39 @@ code {
 
 .h-250 {
     height: 250px;
+}
+
+.colors {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    margin-top: 10px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.white {
+    background-color: #fff;
+}
+
+.red {
+    background-color: #ff0000;
+}
+
+.yellow {
+    background-color: #ffff00;
+}
+
+.orange {
+    background-color: #ffa500;
 }
