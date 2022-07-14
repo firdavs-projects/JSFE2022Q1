@@ -22,8 +22,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'error',
-    curly: 'error',
+    'curly': 'error',
     'prefer-const': 'error',
-    'linebreak-style': 'error',
   },
 };

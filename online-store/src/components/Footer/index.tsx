@@ -1,9 +1,9 @@
-import React from 'react';
-import {Container} from "react-bootstrap";
+import React, { FC } from "react";
+import { Container } from "react-bootstrap";
 import rsLogo from '../../assets/icons/logo_rs_text.svg';
 
-const Footer = () => {
-    const getCurrentYear = () => {
+const Footer: FC = (): JSX.Element => {
+    const getCurrentYear = (): number => {
         const date = new Date();
         return date.getFullYear();
     }

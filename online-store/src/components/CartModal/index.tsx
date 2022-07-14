@@ -5,14 +5,14 @@ import {Smartphone} from "../../types/Smartphone";
 import {convertToAmount} from "../../utils";
 import {Currency} from "../../types";
 
-export interface CartModalProps {
+interface CartModalProps {
     show: boolean;
     handleClose: () => void;
     onRemoveFromCart: (id: number) => void;
     cart: Smartphone[];
 }
 
-const CartModal: FC<CartModalProps> = ({show, handleClose, onRemoveFromCart, cart}) => {
+const CartModal: FC<CartModalProps> = ({show, handleClose, onRemoveFromCart, cart}): JSX.Element => {
     const total = convertToAmount(cart.reduce((acc, cur) => acc + +cur.price, 0));
     return (
         <Modal

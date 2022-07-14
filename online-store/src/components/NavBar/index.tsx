@@ -3,13 +3,13 @@ import {Button, Container, Navbar} from "react-bootstrap";
 import {Icon} from "ts-react-feather-icons";
 import rsLogo from '../../assets/icons/logo_rs_text.svg';
 
-export interface NavbarProps {
+interface NavbarProps {
     title: string;
     onClick: () => void;
     count: number;
 }
 
-const NavBar: FC<NavbarProps> = ({title, count, onClick}) => {
+const NavBar: FC<NavbarProps> = ({title, count, onClick}): JSX.Element => {
     return (
         <header className="position-sticky top-0" style={{zIndex: 10}}>
             <Navbar bg="dark" variant="dark">

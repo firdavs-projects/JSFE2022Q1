@@ -2,12 +2,12 @@ import React, {FC, useState} from 'react';
 import {Card, Form} from "react-bootstrap";
 import {Sort} from "../../types";
 
-export interface SearchProps {
+interface SearchProps {
     onInputChange: (value: string) => void;
     onSortChange: (sort: Sort) => void;
 }
 
-const Search: FC<SearchProps> = ({onInputChange, onSortChange}) => {
+const Search: FC<SearchProps> = ({onInputChange, onSortChange}): JSX.Element => {
     const [value, setValue] = useState<string>('');
     const [sort, setSort] = useState<Sort>(Sort.default);
 

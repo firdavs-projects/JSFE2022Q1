@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import MainLayout from "./components/MainLayout";
 import Products from "./components/Products";
 import {Smartphone} from "./types/Smartphone";
@@ -12,19 +12,9 @@ import Range from "./components/Range";
 import {toast, Toaster} from 'react-hot-toast';
 import FilterContainer from "./components/FilterContainer";
 import Colorbox from "./components/Colorbox";
+import {CART_FULL_MESSAGE, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE } from './utils/constants';
 
-const INITIAL_MIN = 0;
-const MAX_CART_SIZE = 20;
-const INITIAL_FILTERS = {
-    count: {min: INITIAL_MIN, max: Infinity},
-    price: {min: INITIAL_MIN, max: Infinity},
-    year: {min: INITIAL_MIN, max: Infinity},
-    colors: [],
-    sort: Sort.default,
-    search: ''
-}
-
-function App() {
+const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [cart, setCart] = useState<Smartphone[]>([]);
@@ -49,8 +39,8 @@ function App() {
         Array.isArray(localCart) && setCart(localCart);
     }, []);
 
-    const isInitialMount = useRef(true);
-    useEffect(() => {
+    const isInitialMount = useRef<boolean>(true);
+    useEffect((): void => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
         } else {
@@ -79,8 +69,8 @@ function App() {
     }
 
     const handleAddToCart = (product: Smartphone): void => {
-        if (cart.length === MAX_CART_SIZE) {
-            toast.error('Извините, все слоты заполнены')
+        if (cart.length === MAX_CART_SIZE && !cart.find(p => p.id === product.id)) {
+            toast.error(CART_FULL_MESSAGE);
             return;
         }
         if (cart.find(p => p.id === product.id)) {

@@ -1,11 +1,11 @@
 import React, {FC} from 'react';
 import {Container, Row} from "react-bootstrap";
 
-export interface FiltersLayoutProps {
+interface FiltersLayoutProps {
     children: React.ReactNode;
 }
 
-const FiltersLayout: FC<FiltersLayoutProps> = ({children}) => {
+const FiltersLayout: FC<FiltersLayoutProps> = ({children}): JSX.Element => {
     return (
         <Container fluid className="my-4">
             <Row xs={1} lg={2} xl={3}>

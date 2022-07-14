@@ -6,7 +6,7 @@ interface FilterContainerProps {
     lg?: number;
 }
 
-const FilterContainer: FC<FilterContainerProps> = ({children, lg}) => {
+const FilterContainer: FC<FilterContainerProps> = ({children, lg}): JSX.Element => {
     return (
         <Col lg={lg}>
             <Card className='h-250 mt-4'>

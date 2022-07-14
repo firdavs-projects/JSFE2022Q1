@@ -8,7 +8,7 @@ interface ColorboxProps {
     onChange: (colors: Colors[]) => void;
 }
 
-const Colorbox: FC<ColorboxProps> = ({colors, onChange}) => {
+const Colorbox: FC<ColorboxProps> = ({colors, onChange}): JSX.Element => {
     const [checked, setChecked] = useState<Colors[]>(colors);
     const onChangeHandler = (color: Colors): void => {
         if (checked.includes(color)) {
@@ -29,7 +29,6 @@ const Colorbox: FC<ColorboxProps> = ({colors, onChange}) => {
                 </div>
             ))}
         </div>
-
     );
 };
 

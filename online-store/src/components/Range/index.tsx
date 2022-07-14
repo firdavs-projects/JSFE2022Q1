@@ -5,23 +5,9 @@ import 'react-range-slider-ts/dist/index.css';
 import './range.css';
 import {findCountByPercent} from "../../utils";
 import {RangeType} from "../../types";
+import {MIN, MAX} from '../../utils/constants';
 
-const MAX = 100;
-const MIN = 0;
-
-const range: JSX.Element = (
-    <div className="range"/>
-);
-
-const activeRange: JSX.Element = (
-    <div className="activeRange"/>
-);
-
-const slider: JSX.Element = (
-    <div className="slider"/>
-);
-
-export interface RangeProps {
+interface RangeProps {
     onChange: (min: number, max: number, type: RangeType) => void;
     minValue: number;
     maxValue: number;
@@ -29,7 +15,7 @@ export interface RangeProps {
     type: RangeType;
 }
 
-const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type}) => {
+const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type}): JSX.Element => {
     const [min, setMin] = useState<number>(MIN);
     const [max, setMax] = useState<number>(MAX);
     const [, setForceUpDate] = useState<boolean>(false);
@@ -74,10 +60,10 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type}) 
             <div className='App_slider'>
                 <div className="value">{findCountByPercent(minValue, maxValue, min)}</div>
                 <TwoSliders
-                    range={range}
-                    active_range={activeRange}
-                    slider1={slider}
-                    slider2={slider}
+                    range={<div className="range"/>}
+                    active_range={<div className="activeRange"/>}
+                    slider1={<div className="slider"/>}
+                    slider2={<div className="slider"/>}
                     ref_slider_num_run={refSliderNumRun}
                     value1={min}
                     value2={max}

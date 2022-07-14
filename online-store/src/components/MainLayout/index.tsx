@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import NavBar from "../NavBar";
 import Footer from "../Footer";
 
-export interface MainLayoutProps {
+interface MainLayoutProps {
     title: string;
     children: React.ReactNode;
     cartCount: number;
@@ -15,7 +15,7 @@ const MainLayout: FC<MainLayoutProps> =
          children,
          cartOnClick,
          cartCount
-     }) => {
+     }): JSX.Element => {
         return (
             <>
                 <NavBar title={title} onClick={cartOnClick} count={cartCount}/>

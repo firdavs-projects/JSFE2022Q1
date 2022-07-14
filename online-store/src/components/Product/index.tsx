@@ -3,13 +3,13 @@ import {Smartphone} from "../../types/Smartphone";
 import {Button, Card, Row} from "react-bootstrap";
 import {Icon} from 'ts-react-feather-icons';
 
-export interface ProductProps {
+interface ProductProps {
     product: Smartphone;
     cart: Smartphone[];
     handleAddToCart: (product: Smartphone) => void;
 }
 
-const Product: FC<ProductProps> = ({product, cart, handleAddToCart}) => {
+const Product: FC<ProductProps> = ({product, cart, handleAddToCart}): JSX.Element => {
     const isInCart = cart.some(item => item.id === product.id);
     const onCartClick = (): void => handleAddToCart(product);
     return (
