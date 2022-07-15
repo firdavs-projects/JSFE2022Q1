@@ -10,7 +10,8 @@ export const INITIAL_FILTERS = {
     brands: [],
     camCount: [],
     sort: Sort.default,
-    search: ''
+    search: '',
+    popular: false
 }
 
 export const CART_FULL_MESSAGE = 'Извините, все слоты заполнены.\nP.S. Из за ограниченности тестовых данных лимит установлен на 5 товаров.';

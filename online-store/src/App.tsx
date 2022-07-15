@@ -23,7 +23,7 @@ import {
     sortProducts
 } from "./utils";
 import Brandbox from './components/Brandbox';
-import {Button} from 'react-bootstrap';
+import {Button, Form} from 'react-bootstrap';
 import Countbox from './components/Countbox';
 
 const App: FC = (): JSX.Element => {
@@ -137,6 +137,10 @@ const App: FC = (): JSX.Element => {
         setFilters({...filters, camCount});
     }
 
+    const handlePopular = (): void => {
+        setFilters({...filters, popular: !filters.popular});
+    }
+
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
         filters.count.max && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
@@ -147,6 +151,7 @@ const App: FC = (): JSX.Element => {
         filters.colors.length > 0 && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
         filters.brands.length > 0 && (newProducts = newProducts.filter(p => filters.brands.includes(p.manufacturer)));
         filters.camCount.length > 0 && (newProducts = newProducts.filter(p => filters.camCount.includes(p.camCount)));
+        filters.popular && (newProducts = newProducts.filter(p => p.isPopular));
         setProducts(newProducts);
     }
 
@@ -166,7 +171,7 @@ const App: FC = (): JSX.Element => {
             {!isLoading && <FiltersLayout>
                 <FilterContainer lg={12}>
                     <h5>Фильтры по значению</h5>
-                    <div className="d-flex align-items-center justify-content-between mt-4">
+                    <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По производителю</h5>
                         <Brandbox
                             brands={manufacturers}
@@ -174,7 +179,7 @@ const App: FC = (): JSX.Element => {
                             initialBrands={filters.brands}
                         />
                     </div>
-                    <div className="d-flex align-items-center justify-content-between mt-4">
+                    <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По цвету</h5>
                         <Colorbox
                             colors={colors}
@@ -182,12 +187,21 @@ const App: FC = (): JSX.Element => {
                             initialColors={filters.colors}
                         />
                     </div>
-                    <div className="d-flex align-items-center justify-content-between mt-4">
+                    <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По количеству камер</h5>
                         <Countbox
                             counts={camCount}
                             onChange={handleCamCount}
                             initialCount={filters.camCount}
+                        />
+                    </div>
+                    <div className="mt-3 pointer">
+                        <Form.Check
+                            type="checkbox"
+                            id="popular"
+                            checked={filters.popular}
+                            onChange={handlePopular}
+                            label="Только популярные товары"
                         />
                     </div>
                 </FilterContainer>
@@ -232,14 +246,14 @@ const App: FC = (): JSX.Element => {
                     <div className="d-flex">
                         <Button
                             className="w-100 mr-1"
-                            variant="warning"
+                            variant="outline-warning"
                             onClick={() => setFilters(INITIAL_FILTERS)}
                         >
                             Сбросить фильтры
                         </Button>
                         <Button
                             className="w-100 ml-1"
-                            variant="warning"
+                            variant="outline-warning"
                             onClick={resetAll}
                         >
                             Сброс настроек

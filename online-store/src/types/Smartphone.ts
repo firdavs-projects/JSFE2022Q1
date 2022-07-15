@@ -12,4 +12,5 @@ export interface Smartphone {
     count: number;
     camera: number;
     camCount: number;
+    isPopular: boolean;
 }

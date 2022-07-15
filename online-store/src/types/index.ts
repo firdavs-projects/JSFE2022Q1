@@ -58,4 +58,5 @@ export type FilterType = {
     camCount: number[];
     sort: Sort;
     search: string;
+    popular: boolean;
 }
