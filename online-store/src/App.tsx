@@ -247,7 +247,7 @@ const App: FC = (): JSX.Element => {
                         <Button
                             className="w-100 mr-1"
                             variant="outline-warning"
-                            onClick={() => setFilters(INITIAL_FILTERS)}
+                            onClick={() => setFilters({...INITIAL_FILTERS, sort: filters.sort})}
                         >
                             Сбросить фильтры
                         </Button>

@@ -19,7 +19,7 @@ const Products: FC<ProductsProps> = ({products, cart, handleAddToCart}): JSX.Ele
                     </Col>
                 ))}
             </Row>
-            {products.length === 0 && <h1 className="text-center">Нет товаров</h1>}
+            {products.length === 0 && <h1 className="text-center">Товаров не найдено</h1>}
         </Container>
     );
 };
