@@ -1,24 +1,34 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
+import {toast, Toaster} from 'react-hot-toast';
+
 import MainLayout from "./components/MainLayout";
+import FiltersLayout from "./components/FiltersLayout";
+import FilterContainer from "./components/FilterContainer";
 import Products from "./components/Products";
 import {Smartphone} from "./types/Smartphone";
 import {smartphones} from "./assets/products";
 import CartModal from "./components/CartModal";
-import {calculateMinMaxFromArray, localStorageGeneric, sortProducts} from "./utils";
-import {Colors, FilterType, localStorageKeys, RangeType, Sort} from "./types";
 import Search from "./components/Search";
-import FiltersLayout from "./components/FiltersLayout";
 import Range from "./components/Range";
-import {toast, Toaster} from 'react-hot-toast';
-import FilterContainer from "./components/FilterContainer";
 import Colorbox from "./components/Colorbox";
-import {CART_FULL_MESSAGE, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE } from './utils/constants';
+
+import {CART_FULL_MESSAGE, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
+import {Colors, FilterType, localStorageKeys, Manufacturers, RangeType, Sort} from "./types";
+import {
+    calculateMinMaxFromArray,
+    filterByMinMax,
+    localStorageGeneric,
+    removeDuplicates,
+    searchByValue,
+    sortProducts
+} from "./utils";
 
 const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [cart, setCart] = useState<Smartphone[]>([]);
     const [colors, setColors] = useState<Colors[]>([]);
+    const [manufacturers, setManufacturers] = useState<Manufacturers[]>([]);
 
     const [minPrice, setMinPrice] = useState<number>(INITIAL_MIN);
     const [maxPrice, setMaxPrice] = useState<number>(INITIAL_MIN);
@@ -30,6 +40,7 @@ const App: FC = (): JSX.Element => {
     const [filters, setFilters] = useState<FilterType>(INITIAL_FILTERS);
 
     const [show, setShow] = useState<boolean>(false);
+
     const handleClose = (): void => setShow(false);
     const handleShow = (): void => setShow(true);
 
@@ -51,19 +62,24 @@ const App: FC = (): JSX.Element => {
     const getProducts = (): void => {
         setIsLoading(true);
         setProducts(smartphones);
+
         const {min: minPrice, max: maxPrice} = calculateMinMaxFromArray(smartphones.map(s => s.price));
-        const {min: minCount, max: maxCount} = calculateMinMaxFromArray(smartphones.map(s => s.count));
-        const {min: minYear, max: maxYear} = calculateMinMaxFromArray(smartphones.map(s => s.year));
         setMinPrice(minPrice);
         setMaxPrice(maxPrice);
+
+        const {min: minCount, max: maxCount} = calculateMinMaxFromArray(smartphones.map(s => s.count));
         setMinCount(minCount);
         setMaxCount(maxCount);
+
+        const {min: minYear, max: maxYear} = calculateMinMaxFromArray(smartphones.map(s => s.year));
         setMinYear(minYear);
         setMaxYear(maxYear);
-        const colors = smartphones
-            .map(s => s.color)
-            .filter((v, i, a) => a.indexOf(v) === i);
+
+        const colors = removeDuplicates<Colors>(smartphones.map(s => s.color));
         setColors(colors);
+        const manufacturers = removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer));
+        setManufacturers(manufacturers);
+
         setFilters({...INITIAL_FILTERS, colors});
         setIsLoading(false);
     }
@@ -75,10 +91,10 @@ const App: FC = (): JSX.Element => {
         }
         if (cart.find(p => p.id === product.id)) {
             handleRemoveFromCart(product.id);
-        } else {
-            setCart([...cart, product]);
-            localStorageGeneric<Smartphone[]>(localStorageKeys.cart, [...cart, product]);
+            return;
         }
+        setCart([...cart, product]);
+        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, [...cart, product]);
     }
 
     const handleRemoveFromCart = (id: number): void => {
@@ -105,17 +121,12 @@ const App: FC = (): JSX.Element => {
 
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
-        filters.count && (newProducts = newProducts
-            .filter(p => p.count >= filters.count.min && p.count <= filters.count.max));
-        filters.price && (newProducts = newProducts
-            .filter(p => p.price >= filters.price.min && p.price <= filters.price.max));
-        filters.year && (newProducts = newProducts
-            .filter(p => p.year >= filters.year.min && p.year <= filters.year.max));
+        filters.count && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
+        filters.price && (newProducts = filterByMinMax(newProducts, filters.price, 'price'));
+        filters.year && (newProducts = filterByMinMax(newProducts, filters.year, 'year'));
         filters.sort && (newProducts = sortProducts(newProducts, filters.sort));
-        filters.search && (newProducts = newProducts
-            .filter(p => p.name.toLowerCase().includes(filters.search.toLowerCase())));
-        filters.colors && (newProducts = newProducts
-            .filter(p => filters.colors.includes(p.color)));
+        filters.search && (newProducts = searchByValue(newProducts, filters.search, 'name'));
+        filters.colors && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
         setProducts(newProducts);
     }
 
@@ -162,6 +173,11 @@ const App: FC = (): JSX.Element => {
                     <div className="d-flex align-items-center justify-content-between mt-4">
                         <h5>По цвету</h5>
                         {!isLoading && <Colorbox colors={colors} onChange={handleColor}/>}
+                    </div>
+
+                    <div className="d-flex align-items-center justify-content-between mt-4">
+                        <h5>По производителю</h5>
+                        {/*{!isLoading && <Colorbox colors={manufacturers} onChange={handleColor}/>}*/}
                     </div>
                 </FilterContainer>
             </FiltersLayout>

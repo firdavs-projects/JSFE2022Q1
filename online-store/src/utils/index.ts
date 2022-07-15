@@ -73,3 +73,19 @@ export const getColorName = (color: Colors): string => {
             return '';
     }
 }
+
+export const removeDuplicates = <T>(array: T[]): T[] => {
+    return array.filter((v, i, a) => a.indexOf(v) === i);
+}
+
+export const filterByMinMax = (
+    products: Smartphone[],
+    {min, max}: { min: number, max: number },
+    key: keyof Smartphone
+): Smartphone[] => {
+    return products.filter(product => product[key] >= min && product[key] <= max);
+}
+
+export const searchByValue = (products: Smartphone[], value: string, key: keyof Smartphone): Smartphone[] => {
+    return products.filter(p => `${p[key]}`.toLowerCase().includes(value.toLowerCase()));
+}
