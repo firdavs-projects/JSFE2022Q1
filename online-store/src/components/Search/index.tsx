@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Card, Form} from "react-bootstrap";
 import {Sort} from "../../types";
 
@@ -13,6 +13,11 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, ini
     const onSearchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
         onInputChange(e.target.value);
     }
+    
+    const focusRef = React.useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        focusRef.current?.focus();
+    }, []);
 
     const onSortChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         onSortChange(e.target.value as Sort);
@@ -21,8 +26,13 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, ini
         <Form>
             <Form.Group className="my-3">
                 <Form.Label><h5>Поиск товаров</h5></Form.Label>
-                <Form.Control value={initialValue} onChange={onSearchChangeHandler} type="text"
-                              placeholder="Поиск товаров по названию"/>
+                <Form.Control
+                    ref={focusRef} 
+                    value={initialValue} 
+                    onChange={onSearchChangeHandler} 
+                    type="text"
+                    placeholder="Поиск товаров по названию"
+                />
             </Form.Group>
             <Form.Group className="my-3">
                 <Form.Label><h5>Сортировка</h5></Form.Label>
