@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {toast, Toaster} from 'react-hot-toast';
+import {Button, Form} from 'react-bootstrap';
 
 import MainLayout from "./components/MainLayout";
 import FiltersLayout from "./components/FiltersLayout";
@@ -11,8 +12,10 @@ import CartModal from "./components/CartModal";
 import Search from "./components/Search";
 import Range from "./components/Range";
 import Colorbox from "./components/Colorbox";
+import Brandbox from './components/Brandbox';
+import Countbox from './components/Countbox';
 
-import {CART_FULL_MESSAGE, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
+import {CART_FULL_MESSAGE, CROSS_CHECK_PR, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
 import {Colors, FilterType, localStorageKeys, Manufacturers, RangeType, Sort} from "./types";
 import {
     calculateMinMaxFromArray,
@@ -22,9 +25,6 @@ import {
     searchByValue,
     sortProducts
 } from "./utils";
-import Brandbox from './components/Brandbox';
-import {Button, Form} from 'react-bootstrap';
-import Countbox from './components/Countbox';
 
 const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -62,6 +62,7 @@ const App: FC = (): JSX.Element => {
     useEffect((): void => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
+            console.log(CROSS_CHECK_PR);
         } else {
             setAllFilters();
             localStorageGeneric<FilterType>(localStorageKeys.filters, filters);
