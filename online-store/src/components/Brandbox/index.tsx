@@ -22,17 +22,18 @@ const getIcon = (manufacturer: Manufacturers): string => {
 interface BrandboxProps {
     brands: Manufacturers[];
     onChange: (colors: Manufacturers[]) => void;
+    initialBrands: Manufacturers[];
 }
 
-const Brandbox: FC<BrandboxProps> = ({brands, onChange}): JSX.Element => {
-    const [checked, setChecked] = useState<Manufacturers[]>([]);
+const Brandbox: FC<BrandboxProps> = ({brands, onChange, initialBrands}): JSX.Element => {
+    // const [checked, setChecked] = useState<Manufacturers[]>(initialBrands);
     const onChangeHandler = (brand: Manufacturers): void => {
-        if (checked.includes(brand)) {
+        if (initialBrands.includes(brand)) {
             // const filtered = checked.filter(b => b !== brand)
-            setChecked([])
+            // setChecked([])
             onChange([]);
         } else {
-            setChecked([brand])
+            // setChecked([brand])
             onChange([brand]);
         }
     }
@@ -42,7 +43,7 @@ const Brandbox: FC<BrandboxProps> = ({brands, onChange}): JSX.Element => {
             {brands.map(brand => (
                 <div
                     key={brand}
-                    className={`box ${brand} ${checked.includes(brand) ? 'checked' : ''}`}
+                    className={`box ${brand} ${initialBrands.includes(brand) ? 'checked' : ''}`}
                     onClick={() => onChangeHandler(brand)}
                 >
                     <img className="brand" src={getIcon(brand)} alt={brand}/>

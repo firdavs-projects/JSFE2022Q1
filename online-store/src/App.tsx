@@ -23,6 +23,7 @@ import {
     sortProducts
 } from "./utils";
 import Brandbox from './components/Brandbox';
+import {Button} from 'react-bootstrap';
 
 const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -49,6 +50,10 @@ const App: FC = (): JSX.Element => {
         getProducts();
         const localCart = localStorageGeneric<Smartphone[]>(localStorageKeys.cart)
         Array.isArray(localCart) && setCart(localCart);
+        const localFilters = localStorageGeneric<FilterType>(localStorageKeys.filters)
+        if (localFilters) {
+            setFilters(localFilters);
+        }
     }, []);
 
     const isInitialMount = useRef<boolean>(true);
@@ -57,6 +62,7 @@ const App: FC = (): JSX.Element => {
             isInitialMount.current = false;
         } else {
             setAllFilters();
+            localStorageGeneric<FilterType>(localStorageKeys.filters, filters);
         }
     }, [filters]);
 
@@ -80,8 +86,7 @@ const App: FC = (): JSX.Element => {
         setColors(colors);
         const manufacturers = removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer));
         setManufacturers(manufacturers);
-
-        setFilters(INITIAL_FILTERS);
+        
         setIsLoading(false);
     }
 
@@ -126,14 +131,21 @@ const App: FC = (): JSX.Element => {
 
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
-        filters.count && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
-        filters.price && (newProducts = filterByMinMax(newProducts, filters.price, 'price'));
-        filters.year && (newProducts = filterByMinMax(newProducts, filters.year, 'year'));
+        filters.count.max && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
+        filters.price.max && (newProducts = filterByMinMax(newProducts, filters.price, 'price'));
+        filters.year.max && (newProducts = filterByMinMax(newProducts, filters.year, 'year'));
         filters.sort && (newProducts = sortProducts(newProducts, filters.sort));
         filters.search && (newProducts = searchByValue(newProducts, filters.search, 'name'));
         filters.colors.length > 0 && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
         filters.brands.length > 0 && (newProducts = newProducts.filter(p => filters.brands.includes(p.manufacturer)));
         setProducts(newProducts);
+    }
+
+    const resetAll = (): void => {
+        localStorage.clear();
+        setCart([]);
+        setFilters(INITIAL_FILTERS);
+        getProducts()
     }
 
     return (
@@ -142,22 +154,26 @@ const App: FC = (): JSX.Element => {
             cartCount={cart.length}
             cartOnClick={handleShow}
         >
-            <FiltersLayout>
+            {!isLoading && <FiltersLayout>
                 <FilterContainer>
-                    <h4>Сортировки</h4>
+                    <h5>Сортировки</h5>
                     <Search
                         onSortChange={handleSort}
                         onInputChange={handleSearch}
+                        initialSort={filters.sort}
+                        initialValue={filters.search}
                     />
                 </FilterContainer>
                 <FilterContainer>
-                    <h4>Диапазоны</h4>
+                    <h5>Диапазоны</h5>
                     <Range
                         type={RangeType.price}
                         onChange={handleRange}
                         maxValue={maxPrice}
                         minValue={minPrice}
                         title="По цене"
+                        initialMin={filters.price?.min || minPrice}
+                        initialMax={filters.price?.max || maxPrice}
                     />
                     <Range
                         type={RangeType.count}
@@ -165,28 +181,54 @@ const App: FC = (): JSX.Element => {
                         maxValue={maxCount}
                         minValue={minCount}
                         title="По количеству на складе"
+                        initialMin={filters.count?.min || minCount}
+                        initialMax={filters.count?.max || maxCount}
                     />
-                </FilterContainer>
-                <FilterContainer lg={12}>
-                    <h4>Характеристики</h4>
                     <Range
                         type={RangeType.year}
                         onChange={handleRange}
                         maxValue={maxYear}
                         minValue={minYear}
                         title="По году выпуска"
+                        initialMin={filters.year?.min || minYear}
+                        initialMax={filters.year?.max || maxYear}
                     />
+                </FilterContainer>
+                <FilterContainer lg={12}>
+                    <h5>Характеристики</h5>
                     <div className="d-flex align-items-center justify-content-between mt-4">
                         <h5>По цвету</h5>
-                        {!isLoading && <Colorbox colors={colors} onChange={handleColor}/>}
+                        <Colorbox
+                            colors={colors}
+                            onChange={handleColor}
+                            initialColors={filters.colors}
+                        />
                     </div>
-
                     <div className="d-flex align-items-center justify-content-between mt-4">
                         <h5>По производителю</h5>
-                        {!isLoading && <Brandbox brands={manufacturers} onChange={handleBrand}/>}
+                        <Brandbox
+                            brands={manufacturers}
+                            onChange={handleBrand}
+                            initialBrands={filters.brands}
+                        />
                     </div>
+
+                    <Button
+                        className="mt-3 w-100"
+                        variant="warning"
+                        onClick={() => setFilters(INITIAL_FILTERS)}
+                    >
+                        Сбросить все фильтры
+                    </Button>
+                    <Button
+                        className="mt-2 w-100"
+                        variant="warning"
+                        onClick={resetAll}
+                    >
+                        Сброс настроек
+                    </Button>
                 </FilterContainer>
-            </FiltersLayout>
+            </FiltersLayout>}
 
             <Products
                 products={products}

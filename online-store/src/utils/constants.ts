@@ -3,9 +3,9 @@ import { Sort } from "../types";
 export const INITIAL_MIN = 0;
 export const MAX_CART_SIZE = 5;
 export const INITIAL_FILTERS = {
-    count: {min: INITIAL_MIN, max: Infinity},
-    price: {min: INITIAL_MIN, max: Infinity},
-    year: {min: INITIAL_MIN, max: Infinity},
+    count: {min: INITIAL_MIN, max: INITIAL_MIN},
+    price: {min: INITIAL_MIN, max: INITIAL_MIN},
+    year: {min: INITIAL_MIN, max: INITIAL_MIN},
     colors: [],
     brands: [],
     sort: Sort.default,

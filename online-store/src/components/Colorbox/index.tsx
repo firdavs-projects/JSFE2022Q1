@@ -6,17 +6,18 @@ import {getColorName} from "../../utils";
 interface ColorboxProps {
     colors: Colors[];
     onChange: (colors: Colors[]) => void;
+    initialColors: Colors[];
 }
 
-const Colorbox: FC<ColorboxProps> = ({colors, onChange}): JSX.Element => {
-    const [checked, setChecked] = useState<Colors[]>([]);
+const Colorbox: FC<ColorboxProps> = ({colors, onChange, initialColors}): JSX.Element => {
+    // const [checked, setChecked] = useState<Colors[]>(initialColors);
     const onChangeHandler = (color: Colors): void => {
-        if (checked.includes(color)) {
+        if (initialColors.includes(color)) {
             // const filtered = checked.filter(c => c !== color)
-            setChecked([])
+            // setChecked([])
             onChange([]);
         } else {
-            setChecked([color])
+            // setChecked([color])
             onChange([color]);
         }
     }
@@ -25,7 +26,7 @@ const Colorbox: FC<ColorboxProps> = ({colors, onChange}): JSX.Element => {
         <div className="colors">
             {colors.map(color => (
                 <div key={color} className={`box ${getColorName(color)}`} onClick={() => onChangeHandler(color)}>
-                    {checked.includes(color) && <Icon name="check" size={22}/>}
+                    {initialColors.includes(color) && <Icon name="check" size={22}/>}
                 </div>
             ))}
         </div>

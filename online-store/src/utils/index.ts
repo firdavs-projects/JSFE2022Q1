@@ -54,7 +54,10 @@ export const calculateMinMaxFromArray = (array: number[]): { min: number, max: n
 }
 
 export const findCountByPercent = (min: number, max: number, percent: number): number => {
-    return Math.round(min + (max - min) * percent / 100);
+    return min + (max - min) * percent / 100;
+}
+export const findPercentByCount = (min: number, max: number, count: number): number => {
+    return (count - min) / (max - min) * 100;
 }
 
 export const getColorName = (color: Colors): string => {

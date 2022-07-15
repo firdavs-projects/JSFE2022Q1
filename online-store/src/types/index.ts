@@ -23,6 +23,7 @@ export enum Currency {
 export enum localStorageKeys {
     products = 'products',
     cart = 'cart',
+    filters = 'filters',
 }
 
 export enum Sort {
