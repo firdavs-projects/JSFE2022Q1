@@ -9,15 +9,15 @@ interface ColorboxProps {
 }
 
 const Colorbox: FC<ColorboxProps> = ({colors, onChange}): JSX.Element => {
-    const [checked, setChecked] = useState<Colors[]>(colors);
+    const [checked, setChecked] = useState<Colors[]>([]);
     const onChangeHandler = (color: Colors): void => {
         if (checked.includes(color)) {
-            const filtered = checked.filter(c => c !== color)
-            setChecked(filtered)
-            onChange(filtered);
+            // const filtered = checked.filter(c => c !== color)
+            setChecked([])
+            onChange([]);
         } else {
-            setChecked([...checked, color])
-            onChange([...checked, color]);
+            setChecked([color])
+            onChange([color]);
         }
     }
 

@@ -53,6 +53,7 @@ export type FilterType = {
     price: Range;
     year: Range;
     colors: Colors[];
+    brands: Manufacturers[];
     sort: Sort;
     search: string;
 }

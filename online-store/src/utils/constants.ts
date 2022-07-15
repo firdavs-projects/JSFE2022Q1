@@ -7,6 +7,7 @@ export const INITIAL_FILTERS = {
     price: {min: INITIAL_MIN, max: Infinity},
     year: {min: INITIAL_MIN, max: Infinity},
     colors: [],
+    brands: [],
     sort: Sort.default,
     search: ''
 }

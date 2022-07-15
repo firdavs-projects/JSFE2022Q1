@@ -2,6 +2,22 @@ import React, {FC, useState} from 'react';
 import {Icon} from 'ts-react-feather-icons';
 import {Colors, Manufacturers} from "../../types";
 import {getColorName} from "../../utils";
+import samsung from "../../assets/icons/samsung.svg";
+import apple from "../../assets/icons/apple.svg";
+import xiaomi from "../../assets/icons/xiaomi.svg";
+
+const getIcon = (manufacturer: Manufacturers): string => {
+    switch (manufacturer) {
+        case Manufacturers.samsung:
+            return samsung;
+        case Manufacturers.apple:
+            return apple;
+        case Manufacturers.xiaomi:
+            return xiaomi;
+        default:
+            return '';
+    }
+}
 
 interface BrandboxProps {
     brands: Manufacturers[];
@@ -9,23 +25,27 @@ interface BrandboxProps {
 }
 
 const Brandbox: FC<BrandboxProps> = ({brands, onChange}): JSX.Element => {
-    const [checked, setChecked] = useState<Manufacturers[]>(brands);
+    const [checked, setChecked] = useState<Manufacturers[]>([]);
     const onChangeHandler = (brand: Manufacturers): void => {
         if (checked.includes(brand)) {
-            const filtered = checked.filter(b => b !== brand)
-            setChecked(filtered)
-            onChange(filtered);
+            // const filtered = checked.filter(b => b !== brand)
+            setChecked([])
+            onChange([]);
         } else {
-            setChecked([...checked, brand])
-            onChange([...checked, brand]);
+            setChecked([brand])
+            onChange([brand]);
         }
     }
 
     return (
-        <div className="colors">
+        <div className="d-flex justify-content-center align-item-center">
             {brands.map(brand => (
-                <div key={brand} className={`box ${brand}`} onClick={() => onChangeHandler(brand)}>
-                    {checked.includes(brand) && <Icon name="check" size={22}/>}
+                <div
+                    key={brand}
+                    className={`box ${brand} ${checked.includes(brand) ? 'checked' : ''}`}
+                    onClick={() => onChangeHandler(brand)}
+                >
+                    <img className="brand" src={getIcon(brand)} alt={brand}/>
                 </div>
             ))}
         </div>

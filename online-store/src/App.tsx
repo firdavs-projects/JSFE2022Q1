@@ -22,6 +22,7 @@ import {
     searchByValue,
     sortProducts
 } from "./utils";
+import Brandbox from './components/Brandbox';
 
 const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -80,7 +81,7 @@ const App: FC = (): JSX.Element => {
         const manufacturers = removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer));
         setManufacturers(manufacturers);
 
-        setFilters({...INITIAL_FILTERS, colors});
+        setFilters(INITIAL_FILTERS);
         setIsLoading(false);
     }
 
@@ -119,6 +120,10 @@ const App: FC = (): JSX.Element => {
         setFilters({...filters, colors});
     }
 
+    const handleBrand = (brands: Manufacturers[]): void => {
+        setFilters({...filters, brands});
+    }
+
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
         filters.count && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
@@ -126,7 +131,8 @@ const App: FC = (): JSX.Element => {
         filters.year && (newProducts = filterByMinMax(newProducts, filters.year, 'year'));
         filters.sort && (newProducts = sortProducts(newProducts, filters.sort));
         filters.search && (newProducts = searchByValue(newProducts, filters.search, 'name'));
-        filters.colors && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
+        filters.colors.length > 0 && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
+        filters.brands.length > 0 && (newProducts = newProducts.filter(p => filters.brands.includes(p.manufacturer)));
         setProducts(newProducts);
     }
 
@@ -177,7 +183,7 @@ const App: FC = (): JSX.Element => {
 
                     <div className="d-flex align-items-center justify-content-between mt-4">
                         <h5>По производителю</h5>
-                        {/*{!isLoading && <Colorbox colors={manufacturers} onChange={handleColor}/>}*/}
+                        {!isLoading && <Brandbox brands={manufacturers} onChange={handleBrand}/>}
                     </div>
                 </FilterContainer>
             </FiltersLayout>

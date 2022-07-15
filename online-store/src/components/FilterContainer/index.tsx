@@ -9,7 +9,7 @@ interface FilterContainerProps {
 const FilterContainer: FC<FilterContainerProps> = ({children, lg}): JSX.Element => {
     return (
         <Col lg={lg}>
-            <Card className='h-250 mt-4'>
+            <Card className='h-300 mt-4'>
                 <Card.Body>
                     {children}
                 </Card.Body>
