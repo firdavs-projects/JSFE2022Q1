@@ -5,7 +5,6 @@ import 'react-range-slider-ts/dist/index.css';
 import './range.css';
 import {findCountByPercent, findPercentByCount} from "../../utils";
 import {RangeType} from "../../types";
-import {MIN, MAX} from '../../utils/constants';
 
 interface RangeProps {
     onChange: (min: number, max: number, type: RangeType) => void;
@@ -18,21 +17,17 @@ interface RangeProps {
 }
 
 const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type, initialMin, initialMax}): JSX.Element => {
-    // const [min, setMin] = useState<number>(findPercentByCount(minValue, maxValue, initialMin));
-    // const [max, setMax] = useState<number>(findPercentByCount(minValue, maxValue, initialMax));
     const [, setForceUpDate] = useState<boolean>(false);
 
     const refSliderNumRun: React.MutableRefObject<number> = useRef(-1);
 
     const handleChangeSlider1 = (newPercent: number): void => {
-        // setMin(newPercent);
         const curr: number = findCountByPercent(minValue, maxValue, newPercent);
         const max: number = initialMax;
         onChange(curr, max, type);
     }
 
     const handleChangeSlider2 = (newPercent: number): void => {
-        // setMax(newPercent);
         const curr: number = findCountByPercent(minValue, maxValue, newPercent);
         const min: number = initialMin;
         onChange(min, curr, type);
@@ -43,8 +38,6 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type, i
     }
 
     const handleReset = (): void => {
-        // setMin(MIN);
-        // setMax(MAX);
         onChange(minValue, maxValue, type);
     }
 

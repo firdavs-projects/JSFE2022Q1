@@ -24,6 +24,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.samsung,
         year: 2019,
         camera: 14,
+        camCount: 3,
     },
     {
         id: 2,
@@ -36,6 +37,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.samsung,
         year: 2022,
         camera: 20,
+        camCount: 3,
     },
     {
         id: 3,
@@ -48,6 +50,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.apple,
         year: 2018,
         camera: 16,
+        camCount: 2,
     },
     {
         id: 4,
@@ -60,6 +63,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.apple,
         year: 2020,
         camera: 16,
+        camCount: 2,
     },
     {
         id: 5,
@@ -72,6 +76,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.apple,
         year: 2021,
         camera: 19,
+        camCount: 2,
     },
     {
         id: 6,
@@ -84,6 +89,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.apple,
         year: 2019,
         camera: 12,
+        camCount: 1,
     },
     {
         id: 7,
@@ -96,6 +102,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.samsung,
         year: 2021,
         camera: 12,
+        camCount: 2,
     },
     {
         id: 8,
@@ -108,6 +115,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.xiaomi,
         year: 2022,
         camera: 48,
+        camCount: 4,
     },
     {
         id: 9,
@@ -120,6 +128,7 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.xiaomi,
         year: 2021,
         camera: 16,
+        camCount: 3
     },
     {
         id: 10,
@@ -132,5 +141,6 @@ export const smartphones: Smartphone[] = [
         manufacturer: Manufacturers.xiaomi,
         year: 2022,
         camera: 48,
+        camCount: 4
     },
 ];

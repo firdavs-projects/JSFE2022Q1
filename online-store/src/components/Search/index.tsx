@@ -10,27 +10,22 @@ interface SearchProps {
 }
 
 const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, initialSort}): JSX.Element => {
-    // const [value, setValue] = useState<string>(initialValue);
-    // const [sort, setSort] = useState<Sort>(initialSort);
-
     const onSearchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        // setValue(e.target.value);
         onInputChange(e.target.value);
     }
 
     const onSortChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-        // setSort(e.target.value as Sort);
         onSortChange(e.target.value as Sort);
     }
     return (
         <Form>
             <Form.Group className="my-3">
-                <Form.Label>Поиск товаров</Form.Label>
+                <Form.Label><h5>Поиск товаров</h5></Form.Label>
                 <Form.Control value={initialValue} onChange={onSearchChangeHandler} type="text"
                               placeholder="Поиск товаров по названию"/>
             </Form.Group>
             <Form.Group className="my-3">
-                <Form.Label>Сортировка</Form.Label>
+                <Form.Label><h5>Сортировка</h5></Form.Label>
                 <Form.Select onChange={onSortChangeHandler} value={initialSort}>
                     <option value={Sort.default}>Выберите порядок</option>
                     <option value={Sort.nameAsc}>По алфавиту от A до Z</option>

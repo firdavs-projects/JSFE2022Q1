@@ -55,6 +55,7 @@ export type FilterType = {
     year: Range;
     colors: Colors[];
     brands: Manufacturers[];
+    camCount: number[];
     sort: Sort;
     search: string;
 }

@@ -26,15 +26,12 @@ interface BrandboxProps {
 }
 
 const Brandbox: FC<BrandboxProps> = ({brands, onChange, initialBrands}): JSX.Element => {
-    // const [checked, setChecked] = useState<Manufacturers[]>(initialBrands);
     const onChangeHandler = (brand: Manufacturers): void => {
         if (initialBrands.includes(brand)) {
-            // const filtered = checked.filter(b => b !== brand)
-            // setChecked([])
-            onChange([]);
+            const filtered = initialBrands.filter(b => b !== brand)
+            onChange(filtered);
         } else {
-            // setChecked([brand])
-            onChange([brand]);
+            onChange([...initialBrands, brand]);
         }
     }
 

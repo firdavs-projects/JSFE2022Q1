@@ -8,6 +8,7 @@ export const INITIAL_FILTERS = {
     year: {min: INITIAL_MIN, max: INITIAL_MIN},
     colors: [],
     brands: [],
+    camCount: [],
     sort: Sort.default,
     search: ''
 }

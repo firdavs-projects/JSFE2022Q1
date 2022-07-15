@@ -10,15 +10,12 @@ interface ColorboxProps {
 }
 
 const Colorbox: FC<ColorboxProps> = ({colors, onChange, initialColors}): JSX.Element => {
-    // const [checked, setChecked] = useState<Colors[]>(initialColors);
     const onChangeHandler = (color: Colors): void => {
         if (initialColors.includes(color)) {
-            // const filtered = checked.filter(c => c !== color)
-            // setChecked([])
-            onChange([]);
+            const filtered = initialColors.filter(c => c !== color);
+            onChange(filtered);
         } else {
-            // setChecked([color])
-            onChange([color]);
+            onChange([...initialColors, color]);
         }
     }
 

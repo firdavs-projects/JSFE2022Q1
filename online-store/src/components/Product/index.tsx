@@ -41,6 +41,7 @@ const Product: FC<ProductProps> = ({product, cart, handleAddToCart}): JSX.Elemen
                 <Card.Text className="mb-0"><small>Цвет: <b>{product.color}</b></small></Card.Text>
                 <Card.Text className="mb-0"><small>Год выпуска: <b>{product.year}</b></small></Card.Text>
                 <Card.Text className="mb-0"><small>Основная камера: <b>{product.camera} Мп</b></small></Card.Text>
+                <Card.Text className="mb-0"><small>Количество камер: <b>{product.camCount} шт</b></small></Card.Text>
                 <Card.Text className="mb-0"><small>В наличии: <b>{product.count} шт</b></small></Card.Text>
             </Card.Body>
         </Card>

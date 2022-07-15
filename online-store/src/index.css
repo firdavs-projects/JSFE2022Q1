@@ -94,3 +94,11 @@ a {
 .orange {
     background-color: #ffa500;
 }
+
+.mr-1{
+    margin-right: 0.3rem;
+}
+
+.ml-1{
+    margin-left: 0.3rem;
+}

@@ -24,6 +24,7 @@ import {
 } from "./utils";
 import Brandbox from './components/Brandbox';
 import {Button} from 'react-bootstrap';
+import Countbox from './components/Countbox';
 
 const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
@@ -31,6 +32,7 @@ const App: FC = (): JSX.Element => {
     const [cart, setCart] = useState<Smartphone[]>([]);
     const [colors, setColors] = useState<Colors[]>([]);
     const [manufacturers, setManufacturers] = useState<Manufacturers[]>([]);
+    const [camCount, setCamCount] = useState<number[]>([]);
 
     const [minPrice, setMinPrice] = useState<number>(INITIAL_MIN);
     const [maxPrice, setMaxPrice] = useState<number>(INITIAL_MIN);
@@ -86,6 +88,8 @@ const App: FC = (): JSX.Element => {
         setColors(colors);
         const manufacturers = removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer));
         setManufacturers(manufacturers);
+        const camCount = removeDuplicates<number>(smartphones.map(s => s.camCount)).sort();
+        setCamCount(camCount);
         
         setIsLoading(false);
     }
@@ -129,6 +133,10 @@ const App: FC = (): JSX.Element => {
         setFilters({...filters, brands});
     }
 
+    const handleCamCount = (camCount: number[]): void => {
+        setFilters({...filters, camCount});
+    }
+
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
         filters.count.max && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
@@ -138,6 +146,7 @@ const App: FC = (): JSX.Element => {
         filters.search && (newProducts = searchByValue(newProducts, filters.search, 'name'));
         filters.colors.length > 0 && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
         filters.brands.length > 0 && (newProducts = newProducts.filter(p => filters.brands.includes(p.manufacturer)));
+        filters.camCount.length > 0 && (newProducts = newProducts.filter(p => filters.camCount.includes(p.camCount)));
         setProducts(newProducts);
     }
 
@@ -145,7 +154,7 @@ const App: FC = (): JSX.Element => {
         localStorage.clear();
         setCart([]);
         setFilters(INITIAL_FILTERS);
-        getProducts()
+        getProducts();
     }
 
     return (
@@ -155,17 +164,35 @@ const App: FC = (): JSX.Element => {
             cartOnClick={handleShow}
         >
             {!isLoading && <FiltersLayout>
-                <FilterContainer>
-                    <h5>Сортировки</h5>
-                    <Search
-                        onSortChange={handleSort}
-                        onInputChange={handleSearch}
-                        initialSort={filters.sort}
-                        initialValue={filters.search}
-                    />
+                <FilterContainer lg={12}>
+                    <h5>Фильтры по значению</h5>
+                    <div className="d-flex align-items-center justify-content-between mt-4">
+                        <h5>По производителю</h5>
+                        <Brandbox
+                            brands={manufacturers}
+                            onChange={handleBrand}
+                            initialBrands={filters.brands}
+                        />
+                    </div>
+                    <div className="d-flex align-items-center justify-content-between mt-4">
+                        <h5>По цвету</h5>
+                        <Colorbox
+                            colors={colors}
+                            onChange={handleColor}
+                            initialColors={filters.colors}
+                        />
+                    </div>
+                    <div className="d-flex align-items-center justify-content-between mt-4">
+                        <h5>По количеству камер</h5>
+                        <Countbox
+                            counts={camCount}
+                            onChange={handleCamCount}
+                            initialCount={filters.camCount}
+                        />
+                    </div>
                 </FilterContainer>
                 <FilterContainer>
-                    <h5>Диапазоны</h5>
+                    <h5>Фильтры по диапазону</h5>
                     <Range
                         type={RangeType.price}
                         onChange={handleRange}
@@ -194,39 +221,30 @@ const App: FC = (): JSX.Element => {
                         initialMax={filters.year?.max || maxYear}
                     />
                 </FilterContainer>
-                <FilterContainer lg={12}>
-                    <h5>Характеристики</h5>
-                    <div className="d-flex align-items-center justify-content-between mt-4">
-                        <h5>По цвету</h5>
-                        <Colorbox
-                            colors={colors}
-                            onChange={handleColor}
-                            initialColors={filters.colors}
-                        />
+                <FilterContainer>
+                    <h5>Сортировки по значению</h5>
+                    <Search
+                        onSortChange={handleSort}
+                        onInputChange={handleSearch}
+                        initialSort={filters.sort}
+                        initialValue={filters.search}
+                    />
+                    <div className="d-flex">
+                        <Button
+                            className="w-100 mr-1"
+                            variant="warning"
+                            onClick={() => setFilters(INITIAL_FILTERS)}
+                        >
+                            Сбросить фильтры
+                        </Button>
+                        <Button
+                            className="w-100 ml-1"
+                            variant="warning"
+                            onClick={resetAll}
+                        >
+                            Сброс настроек
+                        </Button>
                     </div>
-                    <div className="d-flex align-items-center justify-content-between mt-4">
-                        <h5>По производителю</h5>
-                        <Brandbox
-                            brands={manufacturers}
-                            onChange={handleBrand}
-                            initialBrands={filters.brands}
-                        />
-                    </div>
-
-                    <Button
-                        className="mt-3 w-100"
-                        variant="warning"
-                        onClick={() => setFilters(INITIAL_FILTERS)}
-                    >
-                        Сбросить все фильтры
-                    </Button>
-                    <Button
-                        className="mt-2 w-100"
-                        variant="warning"
-                        onClick={resetAll}
-                    >
-                        Сброс настроек
-                    </Button>
                 </FilterContainer>
             </FiltersLayout>}
 

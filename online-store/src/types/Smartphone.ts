@@ -11,4 +11,5 @@ export interface Smartphone {
     year: number;
     count: number;
     camera: number;
+    camCount: number;
 }
