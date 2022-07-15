@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Card, Form} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
+import { Icon } from 'ts-react-feather-icons';
 import {Sort} from "../../types";
 
 interface SearchProps {
@@ -25,14 +26,20 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, ini
     return (
         <Form>
             <Form.Group className="my-3">
-                <Form.Label><h5>Поиск товаров</h5></Form.Label>
-                <Form.Control
-                    ref={focusRef} 
-                    value={initialValue} 
-                    onChange={onSearchChangeHandler} 
-                    type="text"
-                    placeholder="Поиск товаров по названию"
-                />
+                <div className="relative">
+                    <Form.Label><h5>Поиск товаров</h5></Form.Label>
+                    <Form.Control
+                        ref={focusRef}
+                        value={initialValue}
+                        onChange={onSearchChangeHandler}
+                        type="text"
+                        placeholder="Поиск товаров по названию"
+                    >
+                    </Form.Control>
+                    {initialValue.length > 0 && <Button onClick={() => onInputChange('')} className="clear" variant="warning">
+                        <Icon name="x-circle" size={18}/>
+                    </Button>}
+                </div>
             </Form.Group>
             <Form.Group className="my-3">
                 <Form.Label><h5>Сортировка</h5></Form.Label>

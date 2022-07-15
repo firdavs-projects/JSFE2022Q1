@@ -102,3 +102,23 @@ a {
 .ml-1{
     margin-left: 0.3rem;
 }
+
+.relative {
+    position: relative;
+}
+
+.clear{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 5px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: none;
+    border: none;
+}
