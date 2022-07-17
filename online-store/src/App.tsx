@@ -1,6 +1,7 @@
 import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {toast, Toaster} from 'react-hot-toast';
 import {Button, Form} from 'react-bootstrap';
+import { useFilters } from './hooks/useFilters';
 
 import MainLayout from "./components/MainLayout";
 import FiltersLayout from "./components/FiltersLayout";
@@ -18,7 +19,7 @@ import Countbox from './components/Countbox';
 import {CROSS_CHECK_PR, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
 import {Colors, FilterType, localStorageKeys, Manufacturers, RangeType, Sort} from "./types";
 import {
-    calculateMinMaxFromArray,
+    calculateMinMax,
     filterByMinMax,
     localStr,
     removeDuplicates,
@@ -31,84 +32,24 @@ const App: FC = (): JSX.Element => {
     const [products, setProducts] = useState<Smartphone[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [cart, setCart] = useState<Smartphone[]>([]);
-    const [colors, setColors] = useState<Colors[]>([]);
-    const [manufacturers, setManufacturers] = useState<Manufacturers[]>([]);
-    const [camCount, setCamCount] = useState<number[]>([]);
-
-    const [minPrice, setMinPrice] = useState<number>(INITIAL_MIN);
-    const [maxPrice, setMaxPrice] = useState<number>(INITIAL_MIN);
-    const [minCount, setMinCount] = useState<number>(INITIAL_MIN);
-    const [maxCount, setMaxCount] = useState<number>(INITIAL_MIN);
-    const [minYear, setMinYear] = useState<number>(INITIAL_MIN);
-    const [maxYear, setMaxYear] = useState<number>(INITIAL_MIN);
-
-    const [filters, setFilters] = useState<FilterType>(INITIAL_FILTERS);
-
     const [show, setShow] = useState<boolean>(false);
+    const {filtered, filters, setFilters} = useFilters(products, INITIAL_FILTERS);
 
     useEffect((): void => {
+        console.log(CROSS_CHECK_PR);
         getProducts();
         const localCart = localStr<Smartphone[]>(localStorageKeys.Cart)
         Array.isArray(localCart) && setCart(localCart);
-        const localFilters = localStr<FilterType>(localStorageKeys.Filters)
-        if (localFilters) {
-            setFilters(localFilters);
-        }
     }, []);
-
-    const isInitialMount = useRef<boolean>(true);
-    useEffect((): void => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            console.log(CROSS_CHECK_PR);
-        } else {
-            setAllFilters();
-            localStr<FilterType>(localStorageKeys.Filters, filters);
-        }
-    }, [filters]);
 
     const getProducts = (): void => {
         setIsLoading(true);
         setProducts(smartphones);
-
-        const {min: minPrice, max: maxPrice} = calculateMinMaxFromArray(smartphones.map(s => s.price));
-        setMinPrice(minPrice);
-        setMaxPrice(maxPrice);
-
-        const {min: minCount, max: maxCount} = calculateMinMaxFromArray(smartphones.map(s => s.count));
-        setMinCount(minCount);
-        setMaxCount(maxCount);
-
-        const {min: minYear, max: maxYear} = calculateMinMaxFromArray(smartphones.map(s => s.year));
-        setMinYear(minYear);
-        setMaxYear(maxYear);
-
-        const colors = removeDuplicates<Colors>(smartphones.map(s => s.color));
-        setColors(colors);
-        const manufacturers = removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer));
-        setManufacturers(manufacturers);
-        const camCount = removeDuplicates<number>(smartphones.map(s => s.camCount)).sort();
-        setCamCount(camCount);
-
         setIsLoading(false);
     }
 
     const handleClose = useCallback((): void => setShow(false), [show]);
     const handleShow = useCallback((): void => setShow(true), [show]);
-
-    const setAllFilters = (): void => {
-        let newProducts = [...smartphones];
-        filters.count.max && (newProducts = filterByMinMax(newProducts, filters.count, 'count'));
-        filters.price.max && (newProducts = filterByMinMax(newProducts, filters.price, 'price'));
-        filters.year.max && (newProducts = filterByMinMax(newProducts, filters.year, 'year'));
-        filters.sort && (newProducts = sortProducts(newProducts, filters.sort));
-        filters.search && (newProducts = searchByValue(newProducts, filters.search, 'name'));
-        filters.colors.length > 0 && (newProducts = newProducts.filter(p => filters.colors.includes(p.color)));
-        filters.brands.length > 0 && (newProducts = newProducts.filter(p => filters.brands.includes(p.manufacturer)));
-        filters.camCount.length > 0 && (newProducts = newProducts.filter(p => filters.camCount.includes(p.camCount)));
-        filters.popular && (newProducts = newProducts.filter(p => p.isPopular));
-        setProducts(newProducts);
-    }
 
     const handleAddToCart = useCallback((product: Smartphone): void => {
         if (cart.length === MAX_CART_SIZE && !cart.find(p => p.id === product.id)) {
@@ -176,7 +117,7 @@ const App: FC = (): JSX.Element => {
                     <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По производителю</h5>
                         <Brandbox
-                            brands={manufacturers}
+                            brands={removeDuplicates<Manufacturers>(smartphones.map(s => s.manufacturer))}
                             onChange={handleBrand}
                             initialBrands={filters.brands}
                         />
@@ -184,7 +125,7 @@ const App: FC = (): JSX.Element => {
                     <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По цвету</h5>
                         <Colorbox
-                            colors={colors}
+                            colors={removeDuplicates<Colors>(products.map(s => s.color))}
                             onChange={handleColor}
                             initialColors={filters.colors}
                         />
@@ -192,7 +133,7 @@ const App: FC = (): JSX.Element => {
                     <div className="d-flex align-items-center justify-content-between mt-3">
                         <h5>По количеству камер</h5>
                         <Countbox
-                            counts={camCount}
+                            counts={removeDuplicates<number>(smartphones.map(s => s.camCount)).sort()}
                             onChange={handleCamCount}
                             initialCount={filters.camCount}
                         />
@@ -212,29 +153,23 @@ const App: FC = (): JSX.Element => {
                     <Range
                         type={RangeType.Price}
                         onChange={handleRange}
-                        maxValue={maxPrice}
-                        minValue={minPrice}
+                        initialMinMax={calculateMinMax(products.map(s => s.price))}
+                        currentMinMax={filters.price.max ? filters.price : calculateMinMax(products.map(s => s.price))}
                         title="По цене"
-                        initialMin={filters.price?.min || minPrice}
-                        initialMax={filters.price?.max || maxPrice}
                     />
                     <Range
                         type={RangeType.Count}
                         onChange={handleRange}
-                        maxValue={maxCount}
-                        minValue={minCount}
+                        initialMinMax={calculateMinMax(products.map(s => s.count))}
+                        currentMinMax={filters.count.max ? filters.count : calculateMinMax(products.map(s => s.count))}
                         title="По количеству на складе"
-                        initialMin={filters.count?.min || minCount}
-                        initialMax={filters.count?.max || maxCount}
                     />
                     <Range
                         type={RangeType.Year}
                         onChange={handleRange}
-                        maxValue={maxYear}
-                        minValue={minYear}
+                        initialMinMax={calculateMinMax(products.map(s => s.year))}
+                        currentMinMax={filters.year.max ? filters.year : calculateMinMax(products.map(s => s.year))}
                         title="По году выпуска"
-                        initialMin={filters.year?.min || minYear}
-                        initialMax={filters.year?.max || maxYear}
                     />
                 </FilterContainer>
                 <FilterContainer>
@@ -265,7 +200,7 @@ const App: FC = (): JSX.Element => {
             </FiltersLayout>}
 
             <Products
-                products={products}
+                products={filtered}
                 cart={cart}
                 handleAddToCart={handleAddToCart}
             />

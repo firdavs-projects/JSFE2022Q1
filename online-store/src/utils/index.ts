@@ -48,7 +48,7 @@ export const sortProducts = (products: Smartphone[], sort: Sort): Smartphone[] =
     return newProducts;
 }
 
-export const calculateMinMaxFromArray = (array: number[]): { min: number, max: number } => {
+export const calculateMinMax = (array: number[]): { min: number, max: number } => {
     const min = Math.min.apply(null, array);
     const max = Math.max.apply(null, array);
     return {min, max};

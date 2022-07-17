@@ -1,36 +1,42 @@
 import React, {FC, useRef, useState} from 'react';
 import {Button, Card} from 'react-bootstrap';
 import {TwoSliders} from 'react-range-slider-ts';
-import 'react-range-slider-ts/dist/index.css';
-import './range.css';
+
 import {findCountByPercent, findPercentByCount} from "../../utils";
 import {RangeType} from "../../types";
 
-interface RangeProps {
-    onChange: (min: number, max: number, type: RangeType) => void;
-    minValue: number;
-    maxValue: number;
-    title: string;
-    type: RangeType;
-    initialMin: number;
-    initialMax: number;
+import 'react-range-slider-ts/dist/index.css';
+import './range.css';
+
+type MinMax = {
+    min: number;
+    max: number;
 }
 
-const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type, initialMin, initialMax}): JSX.Element => {
-    const [, setForceUpDate] = useState<boolean>(false);
+interface RangeProps {
+    onChange: (min: number, max: number, type: RangeType) => void;
+    initialMinMax: MinMax;
+    title: string;
+    type: RangeType;
+    currentMinMax: MinMax;
+}
 
+const SortRange: FC<RangeProps> = ({onChange, initialMinMax, title, type, currentMinMax}): JSX.Element => {
+    const [, setForceUpDate] = useState<boolean>(false);
+    const {min, max} = initialMinMax;
+    const {min: currentMin, max: currentMax} = currentMinMax;
     const refSliderNumRun: React.MutableRefObject<number> = useRef(-1);
 
     const handleChangeMinSlider = (newPercent: number): void => {
-        const curr: number = findCountByPercent(minValue, maxValue, newPercent);
-        const max: number = initialMax;
-        onChange(curr, max, type);
+        const currMin: number = findCountByPercent(min, max, newPercent);
+        const currMax: number = currentMax;
+        onChange(currMin, currMax, type);
     }
 
     const handleChangeMaxSlider = (newPercent: number): void => {
-        const curr: number = findCountByPercent(minValue, maxValue, newPercent);
-        const min: number = initialMin;
-        onChange(min, curr, type);
+        const currMax: number = findCountByPercent(min, max, newPercent);
+        const currMin: number = currentMin;
+        onChange(currMin, currMax, type);
     }
 
     const afterMouseUp = (): void => {
@@ -38,7 +44,7 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type, i
     }
 
     const handleReset = (): void => {
-        onChange(minValue, maxValue, type);
+        onChange(min, max, type);
     }
 
     return (
@@ -54,20 +60,20 @@ const SortRange: FC<RangeProps> = ({onChange, minValue, maxValue, title, type, i
                 </Button>
             </Card.Title>
             <div className='App_slider'>
-                <div className="value">{Math.round(initialMin)}</div>
+                <div className="value">{Math.round(currentMin)}</div>
                 <TwoSliders
                     range={<div className="range"/>}
                     active_range={<div className="activeRange"/>}
                     slider1={<div className="slider"/>}
                     slider2={<div className="slider"/>}
                     ref_slider_num_run={refSliderNumRun}
-                    value1={findPercentByCount(minValue, maxValue, initialMin)}
-                    value2={findPercentByCount(minValue, maxValue, initialMax)}
+                    value1={findPercentByCount(min, max, currentMin)}
+                    value2={findPercentByCount(min, max, currentMax)}
                     handleChangeSlider1={handleChangeMinSlider}
                     handleChangeSlider2={handleChangeMaxSlider}
                     afterMouseUp={afterMouseUp}
                 />
-                <div className="value">{Math.round(initialMax)}</div>
+                <div className="value">{Math.round(currentMax)}</div>
             </div>
         </div>
     );
