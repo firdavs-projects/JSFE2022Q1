@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {toast, Toaster} from 'react-hot-toast';
 import {Button, Form} from 'react-bootstrap';
 
@@ -45,9 +45,6 @@ const App: FC = (): JSX.Element => {
 
     const [show, setShow] = useState<boolean>(false);
 
-    const handleClose = (): void => setShow(false);
-    const handleShow = (): void => setShow(true);
-
     useEffect((): void => {
         getProducts();
         const localCart = localStorageGeneric<Smartphone[]>(localStorageKeys.cart)
@@ -91,56 +88,12 @@ const App: FC = (): JSX.Element => {
         setManufacturers(manufacturers);
         const camCount = removeDuplicates<number>(smartphones.map(s => s.camCount)).sort();
         setCamCount(camCount);
-        
+
         setIsLoading(false);
     }
 
-    const handleAddToCart = (product: Smartphone): void => {
-        if (cart.length === MAX_CART_SIZE && !cart.find(p => p.id === product.id)) {
-            toast.error(CART_FULL_MESSAGE);
-            return;
-        }
-        if (cart.find(p => p.id === product.id)) {
-            handleRemoveFromCart(product.id);
-            return;
-        }
-        setCart([...cart, product]);
-        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, [...cart, product]);
-    }
-
-    const handleRemoveFromCart = (id: number): void => {
-        const newCart = cart.filter(p => p.id !== id)
-        setCart(newCart);
-        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, newCart);
-    }
-
-    const handleSearch = (search: string): void => {
-        setFilters({...filters, search});
-    }
-
-    const handleSort = (sort: Sort): void => {
-        setFilters({...filters, sort});
-    }
-
-    const handleRange = (min: number, max: number, type: RangeType): void => {
-        setFilters({...filters, [type]: {min, max}});
-    }
-
-    const handleColor = (colors: Colors[]): void => {
-        setFilters({...filters, colors});
-    }
-
-    const handleBrand = (brands: Manufacturers[]): void => {
-        setFilters({...filters, brands});
-    }
-
-    const handleCamCount = (camCount: number[]): void => {
-        setFilters({...filters, camCount});
-    }
-
-    const handlePopular = (): void => {
-        setFilters({...filters, popular: !filters.popular});
-    }
+    const handleClose = useCallback((): void => setShow(false), [show]);
+    const handleShow = useCallback((): void => setShow(true), [show]);
 
     const setAllFilters = (): void => {
         let newProducts = [...smartphones];
@@ -156,12 +109,59 @@ const App: FC = (): JSX.Element => {
         setProducts(newProducts);
     }
 
-    const resetAll = (): void => {
+    const handleAddToCart = useCallback((product: Smartphone): void => {
+        if (cart.length === MAX_CART_SIZE && !cart.find(p => p.id === product.id)) {
+            toast.error(CART_FULL_MESSAGE);
+            return;
+        }
+        if (cart.find(p => p.id === product.id)) {
+            handleRemoveFromCart(product.id);
+            return;
+        }
+        setCart([...cart, product]);
+        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, [...cart, product]);
+    }, [cart])
+
+    const handleRemoveFromCart = useCallback((id: number): void => {
+        const newCart = cart.filter(p => p.id !== id)
+        setCart(newCart);
+        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, newCart);
+    }, [cart])
+
+    const handleSearch = useCallback((search: string): void => {
+        setFilters({...filters, search});
+    }, [filters])
+
+    const handleSort = useCallback((sort: Sort): void => {
+        setFilters({...filters, sort});
+    }, [filters])
+
+    const handleRange = useCallback((min: number, max: number, type: RangeType): void => {
+        setFilters({...filters, [type]: {min, max}});
+    }, [filters])
+
+    const handleColor = useCallback((colors: Colors[]): void => {
+        setFilters({...filters, colors});
+    }, [filters])
+
+    const handleBrand = useCallback((brands: Manufacturers[]): void => {
+        setFilters({...filters, brands});
+    }, [filters])
+
+    const handlePopular = useCallback((): void => {
+        setFilters({...filters, popular: !filters.popular});
+    }, [filters]);
+
+    const handleCamCount = useCallback((camCount: number[]): void => {
+        setFilters({...filters, camCount});
+    }, [filters])
+
+    const resetAll = useCallback((): void => {
         localStorage.clear();
         setCart([]);
         setFilters(INITIAL_FILTERS);
         getProducts();
-    }
+    }, [cart, filters])
 
     return (
         <MainLayout
