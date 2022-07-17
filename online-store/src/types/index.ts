@@ -1,47 +1,47 @@
 export enum Colors {
-    black = 'Черный',
-    white = 'Белый',
-    gold = 'Золотой',
-    silver = 'Серебряный',
-    red = 'Красный',
-    blue = 'Синий',
-    yellow = 'Желтый',
-    orange = 'Оранжевый',
-    all = 'Все'
+    Black = 'Черный',
+    White = 'Белый',
+    Gold = 'Золотой',
+    Silver = 'Серебряный',
+    Red = 'Красный',
+    Blue = 'Синий',
+    Yellow = 'Желтый',
+    Orange = 'Оранжевый',
+    All = 'Все'
 }
 
 export enum Manufacturers {
-    samsung = 'Samsung',
-    apple = 'Apple',
-    xiaomi = 'Xiaomi',
+    Samsung = 'Samsung',
+    Apple = 'Apple',
+    Xiaomi = 'Xiaomi',
 }
 
 export enum Currency {
-    usd = '$',
+    Usd = '$',
 }
 
 export enum localStorageKeys {
-    products = 'products',
-    cart = 'cart',
-    filters = 'filters',
+    Products = 'products',
+    Cart = 'cart',
+    Filters = 'filters',
 }
 
 export enum Sort {
-    default = 'default',
-    priceAsc = 'priceAsc',
-    priceDesc = 'priceDesc',
-    nameAsc = 'nameAsc',
-    nameDesc = 'nameDesc',
-    countAsc = 'countAsc',
-    countDesc = 'countDesc',
-    yearAsc = 'yearAsc',
-    yearDesc = 'yearDesc',
+    Default = 'default',
+    PriceAsc = 'priceAsc',
+    PriceDesc = 'priceDesc',
+    NameAsc = 'nameAsc',
+    NameDesc = 'nameDesc',
+    CountAsc = 'countAsc',
+    CountDesc = 'countDesc',
+    YearAsc = 'yearAsc',
+    YearDesc = 'yearDesc',
 }
 
 export enum RangeType {
-    price = 'price',
-    year = 'year',
-    count = 'count',
+    Price = 'price',
+    Year = 'year',
+    Count = 'count',
 }
 
 type Range = {

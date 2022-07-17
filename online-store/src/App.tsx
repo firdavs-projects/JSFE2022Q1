@@ -15,15 +15,16 @@ import Colorbox from "./components/Colorbox";
 import Brandbox from './components/Brandbox';
 import Countbox from './components/Countbox';
 
-import {CART_FULL_MESSAGE, CROSS_CHECK_PR, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
+import {CROSS_CHECK_PR, INITIAL_FILTERS, INITIAL_MIN, MAX_CART_SIZE} from './utils/constants';
 import {Colors, FilterType, localStorageKeys, Manufacturers, RangeType, Sort} from "./types";
 import {
     calculateMinMaxFromArray,
     filterByMinMax,
-    localStorageGeneric,
+    localStr,
     removeDuplicates,
     searchByValue,
-    sortProducts
+    sortProducts,
+    getCartFullMessage
 } from "./utils";
 
 const App: FC = (): JSX.Element => {
@@ -47,9 +48,9 @@ const App: FC = (): JSX.Element => {
 
     useEffect((): void => {
         getProducts();
-        const localCart = localStorageGeneric<Smartphone[]>(localStorageKeys.cart)
+        const localCart = localStr<Smartphone[]>(localStorageKeys.Cart)
         Array.isArray(localCart) && setCart(localCart);
-        const localFilters = localStorageGeneric<FilterType>(localStorageKeys.filters)
+        const localFilters = localStr<FilterType>(localStorageKeys.Filters)
         if (localFilters) {
             setFilters(localFilters);
         }
@@ -62,7 +63,7 @@ const App: FC = (): JSX.Element => {
             console.log(CROSS_CHECK_PR);
         } else {
             setAllFilters();
-            localStorageGeneric<FilterType>(localStorageKeys.filters, filters);
+            localStr<FilterType>(localStorageKeys.Filters, filters);
         }
     }, [filters]);
 
@@ -111,7 +112,7 @@ const App: FC = (): JSX.Element => {
 
     const handleAddToCart = useCallback((product: Smartphone): void => {
         if (cart.length === MAX_CART_SIZE && !cart.find(p => p.id === product.id)) {
-            toast.error(CART_FULL_MESSAGE);
+            toast.error(getCartFullMessage());
             return;
         }
         if (cart.find(p => p.id === product.id)) {
@@ -119,13 +120,13 @@ const App: FC = (): JSX.Element => {
             return;
         }
         setCart([...cart, product]);
-        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, [...cart, product]);
+        localStr<Smartphone[]>(localStorageKeys.Cart, [...cart, product]);
     }, [cart])
 
     const handleRemoveFromCart = useCallback((id: number): void => {
         const newCart = cart.filter(p => p.id !== id)
         setCart(newCart);
-        localStorageGeneric<Smartphone[]>(localStorageKeys.cart, newCart);
+        localStr<Smartphone[]>(localStorageKeys.Cart, newCart);
     }, [cart])
 
     const handleSearch = useCallback((search: string): void => {
@@ -209,7 +210,7 @@ const App: FC = (): JSX.Element => {
                 <FilterContainer>
                     <h5>Фильтры по диапазону</h5>
                     <Range
-                        type={RangeType.price}
+                        type={RangeType.Price}
                         onChange={handleRange}
                         maxValue={maxPrice}
                         minValue={minPrice}
@@ -218,7 +219,7 @@ const App: FC = (): JSX.Element => {
                         initialMax={filters.price?.max || maxPrice}
                     />
                     <Range
-                        type={RangeType.count}
+                        type={RangeType.Count}
                         onChange={handleRange}
                         maxValue={maxCount}
                         minValue={minCount}
@@ -227,7 +228,7 @@ const App: FC = (): JSX.Element => {
                         initialMax={filters.count?.max || maxCount}
                     />
                     <Range
-                        type={RangeType.year}
+                        type={RangeType.Year}
                         onChange={handleRange}
                         maxValue={maxYear}
                         minValue={minYear}

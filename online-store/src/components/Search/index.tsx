@@ -44,15 +44,15 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, ini
             <Form.Group className="my-3">
                 <Form.Label><h5>Сортировка</h5></Form.Label>
                 <Form.Select onChange={onSortChangeHandler} value={initialSort}>
-                    <option value={Sort.default}>Выберите порядок</option>
-                    <option value={Sort.nameAsc}>По алфавиту от A до Z</option>
-                    <option value={Sort.nameDesc}>По алфавиту от Z до A</option>
-                    <option value={Sort.priceAsc}>По цене по возрастанию</option>
-                    <option value={Sort.priceDesc}>По цене по убыванию</option>
-                    <option value={Sort.countAsc}>По количеству по возрастанию</option>
-                    <option value={Sort.countDesc}>По количеству по убыванию</option>
-                    <option value={Sort.yearAsc}>По году выпуска по возрастанию</option>
-                    <option value={Sort.yearDesc}>По году выпуска по убыванию</option>
+                    <option value={Sort.Default}>Выберите порядок</option>
+                    <option value={Sort.NameAsc}>По алфавиту от A до Z</option>
+                    <option value={Sort.NameDesc}>По алфавиту от Z до A</option>
+                    <option value={Sort.PriceAsc}>По цене по возрастанию</option>
+                    <option value={Sort.PriceDesc}>По цене по убыванию</option>
+                    <option value={Sort.CountAsc}>По количеству по возрастанию</option>
+                    <option value={Sort.CountDesc}>По количеству по убыванию</option>
+                    <option value={Sort.YearAsc}>По году выпуска по возрастанию</option>
+                    <option value={Sort.YearDesc}>По году выпуска по убыванию</option>
                 </Form.Select>
             </Form.Group>
         </Form>

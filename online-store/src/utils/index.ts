@@ -1,7 +1,8 @@
 import {Colors, Sort} from "../types";
 import {Smartphone} from "../types/Smartphone";
+import { MAX_CART_SIZE } from "./constants";
 
-export const localStorageGeneric = <T>(key: string, value?: T): T | undefined => {
+export const localStr = <T>(key: string, value?: T): T | undefined => {
     if (value) {
         localStorage.setItem(key, JSON.stringify(value));
     } else {
@@ -16,28 +17,28 @@ export const convertToAmount = (value: number): string => {
 export const sortProducts = (products: Smartphone[], sort: Sort): Smartphone[] => {
     const newProducts = [...products];
     switch (sort) {
-        case Sort.priceAsc:
+        case Sort.PriceAsc:
             newProducts.sort((a, b) => a.price - b.price);
             break;
-        case Sort.priceDesc:
+        case Sort.PriceDesc:
             newProducts.sort((a, b) => b.price - a.price);
             break;
-        case Sort.nameAsc:
+        case Sort.NameAsc:
             newProducts.sort((a, b) => a.name.localeCompare(b.name));
             break;
-        case Sort.nameDesc:
+        case Sort.NameDesc:
             newProducts.sort((a, b) => b.name.localeCompare(a.name));
             break;
-        case Sort.yearAsc:
+        case Sort.YearAsc:
             newProducts.sort((a, b) => a.year - b.year);
             break;
-        case Sort.yearDesc:
+        case Sort.YearDesc:
             newProducts.sort((a, b) => b.year - a.year);
             break;
-        case Sort.countAsc:
+        case Sort.CountAsc:
             newProducts.sort((a, b) => a.count - b.count);
             break;
-        case Sort.countDesc:
+        case Sort.CountDesc:
             newProducts.sort((a, b) => b.count - a.count);
             break;
         default:
@@ -48,8 +49,8 @@ export const sortProducts = (products: Smartphone[], sort: Sort): Smartphone[] =
 }
 
 export const calculateMinMaxFromArray = (array: number[]): { min: number, max: number } => {
-    const min = array.reduce((min, value) => Math.min(min, value), array[0]);
-    const max = array.reduce((max, value) => Math.max(max, value), array[0]);
+    const min = Math.min.apply(null, array);
+    const max = Math.max.apply(null, array);
     return {min, max};
 }
 
@@ -57,20 +58,23 @@ export const findCountByPercent = (min: number, max: number, percent: number): n
     return min + (max - min) * percent / 100;
 }
 export const findPercentByCount = (min: number, max: number, count: number): number => {
-    return (count - min) / (max - min) * 100;
+    if (max - min !== 0) {
+        return (count - min) / (max - min) * 100;
+    }
+    return 0;
 }
 
 export const getColorName = (color: Colors): string => {
     switch (color) {
-        case 'Красный':
+        case Colors.Red:
             return 'red';
-        case 'Синий':
+        case Colors.Blue:
             return 'blue';
-        case 'Желтый':
+        case Colors.Yellow:
             return 'yellow';
-        case 'Оранжевый':
+        case Colors.Orange:
             return 'orange';
-        case 'Белый':
+        case Colors.White:
             return 'white';
         default:
             return '';
@@ -92,3 +96,8 @@ export const filterByMinMax = (
 export const searchByValue = (products: Smartphone[], value: string, key: keyof Smartphone): Smartphone[] => {
     return products.filter(p => `${p[key]}`.toLowerCase().includes(value.toLowerCase()));
 }
+
+export const getCartFullMessage = (limit: number = MAX_CART_SIZE): string => {
+    return `Извините, все слоты заполнены.\nP.S. Из за ограниченности тестовых данных лимит установлен на ${limit} товаров.`
+};
+

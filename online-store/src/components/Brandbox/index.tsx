@@ -8,11 +8,11 @@ import xiaomi from "../../assets/icons/xiaomi.svg";
 
 const getIcon = (manufacturer: Manufacturers): string => {
     switch (manufacturer) {
-        case Manufacturers.samsung:
+        case Manufacturers.Samsung:
             return samsung;
-        case Manufacturers.apple:
+        case Manufacturers.Apple:
             return apple;
-        case Manufacturers.xiaomi:
+        case Manufacturers.Xiaomi:
             return xiaomi;
         default:
             return '';

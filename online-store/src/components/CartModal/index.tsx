@@ -44,7 +44,7 @@ const CartModal: FC<CartModalProps> = ({show, handleClose, onRemoveFromCart, car
                     </Card>
                 ))}
                 {cart.length === 0 && <div>Корзина пуста</div>}
-                {total && <div className="text-right">Итого: {total} {Currency.usd}</div>}
+                {total && <div className="text-right">Итого: {total} {Currency.Usd}</div>}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
