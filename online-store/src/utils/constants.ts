@@ -1,8 +1,8 @@
-import { Sort } from "../types";
+import {FilterType, Sort } from "../types";
 
 export const INITIAL_MIN = 0;
 export const MAX_CART_SIZE = 5;
-export const INITIAL_FILTERS = {
+export const INITIAL_FILTERS: FilterType = {
     count: {min: INITIAL_MIN, max: INITIAL_MIN},
     price: {min: INITIAL_MIN, max: INITIAL_MIN},
     year: {min: INITIAL_MIN, max: INITIAL_MIN},

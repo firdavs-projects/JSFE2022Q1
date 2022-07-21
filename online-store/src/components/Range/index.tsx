@@ -21,7 +21,7 @@ interface RangeProps {
     currentMinMax: MinMax;
 }
 
-const SortRange: FC<RangeProps> = ({onChange, initialMinMax, title, type, currentMinMax}): JSX.Element => {
+const Range: FC<RangeProps> = ({onChange, initialMinMax, title, type, currentMinMax}): JSX.Element => {
     const [, setForceUpDate] = useState<boolean>(false);
     const {min, max} = initialMinMax;
     const {min: currentMin, max: currentMax} = currentMinMax;
@@ -54,6 +54,7 @@ const SortRange: FC<RangeProps> = ({onChange, initialMinMax, title, type, curren
                 <Button
                     variant="outline-warning"
                     className="my-3"
+                    id="range-reset-btn"
                     onClick={handleReset}
                 >
                     <small>Сбросить</small>
@@ -79,4 +80,4 @@ const SortRange: FC<RangeProps> = ({onChange, initialMinMax, title, type, curren
     );
 };
 
-export default SortRange;
+export default Range;

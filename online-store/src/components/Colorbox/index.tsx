@@ -10,20 +10,28 @@ interface ColorboxProps {
 }
 
 const Colorbox: FC<ColorboxProps> = ({colors, onChange, initialColors}): JSX.Element => {
+    const [colorsState, setColorsState] = useState<Colors[]>(initialColors);
     const onChangeHandler = (color: Colors): void => {
-        if (initialColors.includes(color)) {
-            const filtered = initialColors.filter(c => c !== color);
+        if (colorsState.includes(color)) {
+            const filtered = colorsState.filter(c => c !== color);
+            setColorsState(filtered);
             onChange(filtered);
         } else {
-            onChange([...initialColors, color]);
+            onChange([...colorsState, color]);
+            setColorsState([...colorsState, color]);
         }
     }
 
     return (
         <div className="colors">
             {colors.map(color => (
-                <div key={color} className={`box ${getColorName(color)}`} onClick={() => onChangeHandler(color)}>
-                    {initialColors.includes(color) && <Icon name="check" size={22}/>}
+                <div 
+                    key={color} 
+                    id={'color-'+getColorName(color)} 
+                    className={`box ${getColorName(color)}`} 
+                    onClick={() => onChangeHandler(color)}
+                >
+                    {colorsState.includes(color) && <Icon name="check" size={22}/>}
                 </div>
             ))}
         </div>

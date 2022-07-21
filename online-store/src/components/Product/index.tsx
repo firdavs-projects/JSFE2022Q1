@@ -28,7 +28,7 @@ const Product: FC<ProductProps> = ({product, cart, handleAddToCart}): JSX.Elemen
                 <Card.Text className="text-success">
                     <Button
                         variant={isInCart ? "warning" : "outline-warning"}
-                        className="px-2 py-1 w-100"
+                        className="px-2 py-1 w-100 add-btn"
                         onClick={onCartClick}
                     >
                         <small style={{color: isInCart ? "white" : "currentcolor"}}>

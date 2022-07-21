@@ -29,6 +29,7 @@ const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, ini
                 <div className="relative">
                     <Form.Label><h5>Поиск товаров</h5></Form.Label>
                     <Form.Control
+                        id="search-input"
                         ref={focusRef}
                         value={initialValue}
                         onChange={onSearchChangeHandler}

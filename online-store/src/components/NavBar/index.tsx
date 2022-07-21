@@ -20,7 +20,8 @@ const NavBar: FC<NavbarProps> = ({title, count, onClick}): JSX.Element => {
                     <Navbar.Collapse className="justify-content-end">
                         <Navbar.Text>
                             <Button onClick={onClick} variant="outline-warning" className="px-2 py-1">
-                                <Icon name="shopping-cart" color="orange" size={16}/> {count}
+                                <Icon name="shopping-cart" color="orange" size={16}/>
+                                <span id="cart-count">{count}</span>
                             </Button>
                         </Navbar.Text>
                     </Navbar.Collapse>

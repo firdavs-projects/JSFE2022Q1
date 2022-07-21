@@ -76,6 +76,8 @@ export const getColorName = (color: Colors): string => {
             return 'orange';
         case Colors.White:
             return 'white';
+        case Colors.Gold:
+            return 'gold';
         default:
             return '';
     }

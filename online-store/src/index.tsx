@@ -4,13 +4,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { smartphones } from './assets/products';
+import {INITIAL_FILTERS, MAX_CART_SIZE } from './utils/constants';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement,
 );
 root.render(
     <React.StrictMode>
-        <App />
+        <App 
+            initialProducts={smartphones} 
+            initialFilters={INITIAL_FILTERS} 
+            initialCart={[]} 
+            maxCartSize={MAX_CART_SIZE} 
+        />
     </React.StrictMode>,
 );
 

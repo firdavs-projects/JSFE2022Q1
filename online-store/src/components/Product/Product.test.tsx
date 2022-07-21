@@ -10,7 +10,7 @@ test('add product to cart', () => {
         cart.push(product);
     }
     render(<Product product={smartphones[0]} cart={cart} handleAddToCart={handleAddToCart}/>);
-    const button = screen.getByText('Добавить');
-    button.click();
+    const button = document.getElementsByClassName('add-btn')[0] as HTMLElement;
+    button?.click();
     expect(cart.length).toBe(1);
 })
