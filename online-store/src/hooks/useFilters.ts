@@ -12,13 +12,17 @@ interface UseFilters {
 export const useFilters = (products: Smartphone[], initialFilters: FilterType): UseFilters => {
     const [filters, setFilters] = useState<FilterType>(initialFilters);
     const [filtered, setFiltered] = useState<Smartphone[]>(products);
+    
+    useEffect(()=> {
+        setAllFilters();
+    }, [products])
 
     const isInitialMount = useRef<boolean>(true);
     useEffect((): void => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             const localFilters = localStr<FilterType>(localStorageKeys.Filters)
-            localFilters && setFilters(localFilters);
+            setFilters(localFilters || initialFilters);
         } else {
             setAllFilters();
             localStr<FilterType>(localStorageKeys.Filters, filters);
