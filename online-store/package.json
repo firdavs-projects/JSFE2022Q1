@@ -4,6 +4,10 @@
   "private": true,
   "homepage": "https://firdavs-projects.github.io/online-store-ts",
   "dependencies": {
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.24",
     "@types/node": "^16.11.43",
     "@types/react": "^18.0.15",
     "@types/react-bootstrap": "^0.32.30",
@@ -22,6 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "test": "react-scripts test",
     "build": "react-scripts build",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
