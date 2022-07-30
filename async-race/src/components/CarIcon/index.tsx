@@ -1,15 +1,18 @@
 import React, { FC } from 'react';
 
 interface Props {
-    color: string;
-    className?: string;
+  color: string;
+  className?: string;
+  style?: React.CSSProperties;
+  id: string;
+
 }
 
-
-const CarIcon: FC<Props> = ({color = 'black', ...props}) => {
-    return (
-        <svg {...props} width={50} height={50} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px"
-             y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve" fill={color}>
+const CarIcon: FC<Props> = ({ color = 'black', className, ...props }) => {
+  return (
+        <svg {...props} className={className + ' car'} width={50} height={50} version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px"
+             y="0px" viewBox="0 0 1000 1000" enableBackground="new 0 0 1000 1000" xmlSpace="preserve" fill={color}>
             <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon</metadata>
             <g>
                 <g transform="translate(0.000000,511.000000) scale(0.100000,-0.100000)">
@@ -22,7 +25,7 @@ const CarIcon: FC<Props> = ({color = 'black', ...props}) => {
                 </g>
             </g>
         </svg>
-    );
+  );
 };
 
 export default CarIcon;

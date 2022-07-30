@@ -1,18 +1,18 @@
-import React, {FC, useState} from 'react';
-import {Tabs} from '../../types';
+import React, { FC, useState } from 'react';
+import { Tabs } from '../../types';
 
 interface Props {
-    onChange: (tab: Tabs) => void;
+  onChange: (tab: Tabs) => void;
 }
 
-const Header: FC<Props> = ({onChange}) => {
-    const [tab, setTab] = useState<Tabs>(Tabs.Garage);
-    const handleChange = (tab: Tabs) => {
-        setTab(tab);
-        onChange(tab);
-    }
+const Header: FC<Props> = ({ onChange }) => {
+  const [tab, setTab] = useState<Tabs>(Tabs.Garage);
+  const handleChange = (current: Tabs) => {
+    setTab(current);
+    onChange(current);
+  };
 
-    return (
+  return (
         <header className="header container-fluid mb-3">
             <h1 className="py-2">Async race</h1>
             <nav>
@@ -36,7 +36,7 @@ const Header: FC<Props> = ({onChange}) => {
                 </ul>
             </nav>
         </header>
-    );
+  );
 };
 
 export default Header;

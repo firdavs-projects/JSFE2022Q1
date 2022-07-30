@@ -1,21 +1,21 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Tabs } from '../../types';
 import Header from '../Header';
 
 interface Props {
-    children: React.ReactNode;
-    onChange: (tab: Tabs) => void;
+  children: ReactNode;
+  onChange: (tab: Tabs) => void;
 }
 
-const MainLayout: FC<Props> = ({children, onChange}) => {
-    return (
+const MainLayout: FC<Props> = ({ children, onChange }) => {
+  return (
         <>
             <Header onChange={onChange}/>
             <main>
                 {children}
             </main>
         </>
-    );
+  );
 };
 
 export default MainLayout;
