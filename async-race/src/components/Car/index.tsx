@@ -34,7 +34,7 @@ const Car: FC<Props> = ({ car, onChange, fetching }) => {
           A
         </button>
         <button
-          disabled={fetching.includes(car.id) || !isStarted}
+          disabled={!isStarted}
           className="btn btn-outline-dark mr-1"
           onClick={handleStop}
         >

@@ -19,7 +19,7 @@ export interface ICarSpeed {
   velocity: number;
 }
 
-export interface IFormMethods {
-  create: 'CREATE';
-  update: 'UPDATE';
+export enum IFormMethods {
+  Create = 'CREATE',
+  Update = 'UPDATE',
 }

@@ -1,14 +1,19 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CarMethods, ICar, ICarSpeed } from '../../types/car';
+import { CarMethods, ICar, ICarSpeed, IFormMethods } from '../../types/car';
 import { generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
-import { deleteCar, patchDriveCar, getCars, postCar, patchStartCar, patchStopCar } from '../actions/garage';
+import { deleteCar, getCars, postCar, putCar } from '../api/garage';
+import { patchDriveCar, patchStartCar, patchStopCar } from '../api/endine';
+import CarForm from '../CarForm';
+
 const brokenCarIds: number[] = [];
+const stoppedCarIds: number[] = [];
 
 const Garage: FC = () => {
   const [cars, setCars] = useState<ICar[]>([]);
   const [fetching, setFetching] = useState<number[]>([]);
+  const [selectedCar, setSelectedCar] = useState<ICar | null>(null);
 
   useEffect(() => {
     getCars((data: ICar[]) => setCars(data));
@@ -52,7 +57,7 @@ const Garage: FC = () => {
       const tick = (): void => {
         currentX += step;
         el.style.transform = `translateX(${currentX}px)`;
-        if (currentX < endX && !brokenCarIds.includes(id)) {
+        if (currentX < endX && !brokenCarIds.includes(id) && !stoppedCarIds.includes(id)) {
           requestAnimationFrame(tick);
         }
       };
@@ -74,14 +79,18 @@ const Garage: FC = () => {
   };
 
   const stopCar = async (id: number): Promise<void> => {
+    stoppedCarIds.push(id);
     const el = document.getElementById(`${id}`);
-    if (el) {
-      el.style.transform = 'translateX(0px)';
-    }
     setFetching(([...fetching, id]));
     patchStopCar(
       id,
-      () => setFetching((prev) => prev.filter((i) => i !== id)),
+      () => {
+        setFetching((prev) => prev.filter((i) => i !== id));
+        if (el) {
+          el.style.transform = 'translateX(0px)';
+        }
+        stoppedCarIds.splice(stoppedCarIds.indexOf(id), 1);
+      },
     );
   };
 
@@ -96,20 +105,41 @@ const Garage: FC = () => {
       case CarMethods.Remove:
         await removeCar(car.id);
         break;
+      case CarMethods.Select:
+        setSelectedCar(car);
+        break;
+      default:
+        break;
     }
+  };
+
+  const handleCarFormSubmit = (car: ICar): void => {
+    if (selectedCar?.id === car.id) {
+      putCar(car,
+        () => setCars((prevCars) => prevCars.map((c) => c.id === car.id ? car : c)),
+      );
+      setSelectedCar(null);
+      return;
+    }
+    createCar(car);
   };
 
   return (
     <section className="container-fluid">
       <h3>Garage ({cars.length})</h3>
-      <button
-        disabled={fetching.includes(CARS_COUNT)}
-        className="btn btn-outline-primary"
-        onClick={handleCreateCars}
-      >
-        Create 100 cars
-      </button>
-      {/*<button className="btn" onClick={handleStartRace}>Start Race</button>*/}
+      <div className="d-flex">
+        <button
+            disabled={fetching.includes(CARS_COUNT)}
+            className="btn btn-success mr-1"
+            onClick={handleCreateCars}
+        >
+          Generate 100 cars
+        </button>
+        <button className="btn btn-primary">Start Race</button>
+      </div>
+      <CarForm onSave={handleCarFormSubmit} method={IFormMethods.Create}/>
+      <CarForm onSave={handleCarFormSubmit} car={selectedCar} method={IFormMethods.Update}/>
+
       <Cars cars={cars} onChange={handleCarChange} fetching={fetching}/>
     </section>
   );
