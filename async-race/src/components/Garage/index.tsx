@@ -1,100 +1,46 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Methods, Routes } from '../../types';
 import { CarMethods, ICar, ICarSpeed } from '../../types/car';
 import { generateCar } from '../../utils';
-import { baseUrl, CARS_COUNT } from '../../utils/constants';
+import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
+import { deleteCar, patchDriveCar, getCars, postCar, patchStartCar, patchStopCar } from '../actions/garage';
+const brokenCarIds: number[] = [];
 
 const Garage: FC = () => {
   const [cars, setCars] = useState<ICar[]>([]);
   const [fetching, setFetching] = useState<number[]>([]);
-  const brokenCarIds: number[] = [];
-
-  const getCars = async (): Promise<void> => {
-    try {
-      const res = await fetch(baseUrl + Routes.Garage);
-      if (res.ok) {
-        const data: ICar[] = await res.json();
-        setCars(data);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   useEffect(() => {
-    getCars();
+    getCars((data: ICar[]) => setCars(data));
   }, []);
 
-  const postCar = async (car: ICar): Promise<void> => {
-    try {
-      setFetching([...fetching, car.id]);
-      const res = await fetch(baseUrl + Routes.Garage, {
-        method: Methods.POST,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(car),
-      });
-      if (res.ok) {
-        const data: ICar = await res.json();
-        setCars((prevCars) => [...prevCars, data]);
-        setFetching((prevFetching) => prevFetching.filter((id) => id !== car.id));
-      }
-    } catch (e) {
-      console.error(e);
-      setFetching((prevFetching) => prevFetching.filter((id) => id !== car.id));
-    }
+  const createCar = (car: ICar): void => {
+    setFetching([...fetching, car.id]);
+    postCar(
+      car,
+      (data: ICar) =>  setCars((prevCars) => [...prevCars, data]),
+      () => setFetching((prev) => prev.filter((id) => id !== car.id)),
+    );
   };
 
   const handleCreateCars = (): void => {
     setFetching([...fetching, CARS_COUNT]);
     for (let i = 0; i < CARS_COUNT; i++) {
-      postCar(generateCar());
+      createCar(generateCar());
     }
     setFetching((prevFetching) => prevFetching
       .filter((id) => id !== CARS_COUNT));
   };
 
-  const carRemove = async (id: number): Promise<void> => {
-    try {
-      setFetching([...fetching, id]);
-      const res = await fetch(baseUrl + Routes.Garage + '/' + id, {
-        method: Methods.DELETE,
-      });
-      if (res.status === 200) {
-        setCars((prevCars) => prevCars.filter(car => car.id !== id));
-        setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-      }
-    } catch (err) {
-      console.log(err);
-      setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-    }
+  const removeCar = (id: number): void => {
+    setFetching([...fetching, id]);
+    deleteCar(id,
+      () => setCars((prevCars) => prevCars.filter(car => car.id !== id)),
+      () => setFetching((prev) => prev.filter((i) => i !== id)),
+    );
   };
 
-  const startDrive = async (id: number): Promise<void> => {
-    try {
-      setFetching([...fetching, id]);
-      const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=drive`, {
-        method: Methods.PATCH,
-      });
-      if (res.status === 200) {
-        // const data = await res.json();
-        // will get time of car
-        setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-      }
-      if (res.status === 500) {
-        console.log('Car is broken');
-        brokenCarIds.push(id);
-        setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-      }
-    } catch (err) {
-      console.log(err);
-      setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-    }
-  };
-
-  const animatePosition = (id: number, distance: number, velocity: number): void => {
+  const animateCar = (id: number, distance: number, velocity: number): void => {
     const screenWidth = document.documentElement.clientWidth;
     const endX = screenWidth - 100;
     const duration = distance / velocity / 1000;
@@ -114,54 +60,41 @@ const Garage: FC = () => {
     }
   };
 
-  const carStart = async (id: number): Promise<void> => {
+  const startCar = async (id: number): Promise<void> => {
     brokenCarIds.splice(brokenCarIds.indexOf(id), 1);
-    try {
-      setFetching(([...fetching, id]));
-      const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=started`, {
-        method: Methods.PATCH,
-      });
-      if (res.status === 200) {
-        const data: ICarSpeed = await res.json();
-        animatePosition(id, data.distance, data.velocity);
-        setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-        await startDrive(id);
-      }
-    } catch (err) {
-      console.log(err);
-      setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-    }
+    setFetching((prev) => [...prev, id]);
+    const onFinish = (data: ICarSpeed) => {
+      animateCar(id, data.distance, data.velocity);
+      patchDriveCar(id,
+        () => brokenCarIds.push(id),
+        () => setFetching((prev) => prev.filter((i) => i !== id)),
+      );
+    };
+    patchStartCar(id, onFinish);
   };
 
-  const carStop = async (id: number): Promise<void> => {
+  const stopCar = async (id: number): Promise<void> => {
     const el = document.getElementById(`${id}`);
     if (el) {
       el.style.transform = 'translateX(0px)';
     }
-    try {
-      setFetching(([...fetching, id]));
-      const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=stopped`, {
-        method: Methods.PATCH,
-      });
-      if (res.ok) {
-        setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-      }
-    } catch (err) {
-      console.log(err);
-      setFetching((prevFetching) => prevFetching.filter((i) => i !== id));
-    }
+    setFetching(([...fetching, id]));
+    patchStopCar(
+      id,
+      () => setFetching((prev) => prev.filter((i) => i !== id)),
+    );
   };
 
   const handleCarChange = async (car: ICar, method: CarMethods): Promise<void> => {
     switch (method) {
       case CarMethods.Start:
-        await carStart(car.id);
+        await startCar(car.id);
         break;
       case CarMethods.Stop:
-        await carStop(car.id);
+        await stopCar(car.id);
         break;
       case CarMethods.Remove:
-        await carRemove(car.id);
+        await removeCar(car.id);
         break;
     }
   };

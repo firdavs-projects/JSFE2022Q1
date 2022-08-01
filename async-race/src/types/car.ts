@@ -18,3 +18,8 @@ export interface ICarSpeed {
   distance: number;
   velocity: number;
 }
+
+export interface IFormMethods {
+  create: 'CREATE';
+  update: 'UPDATE';
+}

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { CarMethods, ICar } from '../../types/car';
 import CarIcon from '../CarIcon';
 
@@ -12,31 +12,29 @@ const Car: FC<Props> = ({ car, onChange, fetching }) => {
   const handleChange = (method: CarMethods): void => {
     onChange(car, method);
   };
-  const [started, setStarted] = React.useState<number[]>([]);
-  const [stopped, setStopped] = React.useState<number[]>([car.id]);
+  const [isStarted, setIsStarted] = useState(false);
+
   const handleStart = (): void => {
     handleChange(CarMethods.Start);
-    setStarted([...started, car.id]);
-    setStopped((prevStopped) => prevStopped.filter((id) => id !== car.id));
+    setIsStarted(true);
   };
   const handleStop = (): void => {
     handleChange(CarMethods.Stop);
-    setStopped([...stopped, car.id]);
-    setStarted((prevStarted) => prevStarted.filter((id) => id !== car.id));
+    setIsStarted(false);
   };
 
   return (
     <div className="car">
       <div className="d-flex justify-content-start align-items-center">
         <button
-          disabled={fetching.includes(car.id) || started.includes(car.id)}
+          disabled={fetching.includes(car.id) || isStarted}
           className="btn btn-outline-primary mr-1"
           onClick={handleStart}
         >
           A
         </button>
         <button
-          disabled={fetching.includes(car.id) || stopped.includes(car.id)}
+          disabled={fetching.includes(car.id) || !isStarted}
           className="btn btn-outline-dark mr-1"
           onClick={handleStop}
         >
