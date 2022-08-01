@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 export const usePagination = <T>(
   data: T[],
   limit: number,
-  uniqueKey: string,
 ): [
     number,
     number,
@@ -11,10 +10,8 @@ export const usePagination = <T>(
     () => void,
     () => void,
   ] => {
-  const [page, setPage] = useState<number>(localStorage.getItem(uniqueKey + 'Page')
-    ? parseInt(localStorage.getItem(uniqueKey + 'Page') as string, 10) : 1);
-  const [pages, setPages] = useState<number>(localStorage.getItem(uniqueKey + 'Pages') ?
-    parseInt(localStorage.getItem(uniqueKey + 'Pages') as string, 10) : 1);
+  const [page, setPage] = useState<number>( 1);
+  const [pages, setPages] = useState<number>( 1);
   const [dataPaginated, setDataPaginated] = useState<T[]>([]);
 
   useEffect(() => {
@@ -24,8 +21,6 @@ export const usePagination = <T>(
   useEffect(() => {
     const start = (page - 1) * limit;
     const end = page * limit;
-    localStorage.setItem(uniqueKey + 'Page', page.toString());
-    localStorage.setItem(uniqueKey + 'Pages', pages.toString());
     setDataPaginated(data.slice(start, end));
   }, [data, page, pages, limit]);
 
