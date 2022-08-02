@@ -8,32 +8,41 @@ import { patchDriveCar, patchStartCar, patchStopCar } from '../api/engine';
 import CarForm from '../CarForm';
 import Win from '../Win';
 import { useTimer } from '../../hooks/useTimer';
-import { getWinner, postWinner } from '../api/winners';
+import { getWinner, postWinner, putWinner } from '../api/winners';
+import { Tabs } from '../../types';
 
 const brokenCarIds: number[] = [];
 const stoppedCarIds: number[] = [];
 
-const Garage: FC = () => {
+const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   const [cars, setCars] = useState<ICar[]>([]);
   const [fetching, setFetching] = useState<number[]>([]);
   const [selectedCar, setSelectedCar] = useState<ICar | null>(null);
   const [winners, setWinners] = useState<IWinner[]>([]);
   const [winner, setWinner] = useState<{ win: IWinner, car: ICar } | null>(null);
   const [times, startTimer, stopTimer] = useTimer();
+
   useEffect(() => {
-    getCars((data: ICar[]) => setCars(data));
-  }, []);
+    if (tab === Tabs.Garage) {
+      getCars(setCars);
+    }
+  }, [tab]);
 
   useEffect(() => {
     if (winners.length === 1) {
       const win = winners[0];
       const car = cars.find(c => c.id === win.id);
+      const updated = {
+        ...win,
+        wins: win.wins + 1,
+        time: win?.lastTime
+          ? win.lastTime < win.time ? win.lastTime : win.time
+          : win.time,
+      };
+      delete updated.lastTime;
       if (car) {
         setWinner({ win, car });
-        postWinner(
-          { ...win, wins: win.wins + 1 },
-          (w: IWinner) => setWinners(winners.map(i => i.id === w.id ? w : i)),
-        );
+        putWinner(updated);
       }
     }
   }, [winners]);
@@ -96,7 +105,7 @@ const Garage: FC = () => {
     stopTimer(id);
     getWinner(
       id,
-      (data: IWinner) => setWinners((prev) => [...prev, { ...data, time }]),
+      (data) => setWinners((prev) => [...prev, { ...data, lastTime: data.time, time }]),
       () => postWinner(
         { id, time, wins: 0 },
         (data: IWinner) => setWinners((prev) => [...prev, data]),
@@ -133,9 +142,7 @@ const Garage: FC = () => {
       id,
       () => {
         closeFetching(id);
-        if (el) {
-          el.style.transform = 'translateX(0px)';
-        }
+        if (el) { el.style.transform = 'translateX(0px)'; }
         stoppedCarIds.splice(stoppedCarIds.indexOf(id), 1);
       },
     );
@@ -192,9 +199,7 @@ const Garage: FC = () => {
       <CarForm onSave={handleCarFormSubmit} method={IFormMethods.Create}/>
       <CarForm onSave={handleCarFormSubmit} car={selectedCar} method={IFormMethods.Update}/>
       <Cars cars={cars} onChange={handleCarChange} fetching={fetching}/>
-        {winner && (
-            <Win winner={winner}/>
-        )}
+      {winner && (<Win winner={winner}/>)}
     </section>
   );
 };

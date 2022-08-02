@@ -8,6 +8,7 @@ export interface IWinner {
   wins: number;
   time: number;
   id: number;
+  lastTime?: number;
 }
 
 export enum CarMethods {

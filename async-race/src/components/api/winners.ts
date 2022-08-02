@@ -26,7 +26,7 @@ export const getWinners = async (finish: (data: IWinner[]) => void): Promise<voi
     const res = await fetch(baseUrl + Routes.Winners );
     if (res.ok) {
       const data: IWinner[] = await res.json();
-      finish(data);
+      finish(data.sort((a, b) => a.time - b.time));
     }
   } catch (e) {
     console.error(e);
@@ -41,6 +41,22 @@ export const postWinner = async (winner: IWinner, finish: (winner: IWinner) => v
       body: JSON.stringify(winner),
     });
     if (res.ok) {
+      const data: IWinner = await res.json();
+      finish(data);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const putWinner = async (winner: IWinner, finish?: (winner: IWinner) => void ): Promise<void> => {
+  try {
+    const res = await fetch(baseUrl + Routes.Winners + '/' + winner.id, {
+      method: Methods.PUT,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(winner),
+    });
+    if (res.ok && finish) {
       const data: IWinner = await res.json();
       finish(data);
     }

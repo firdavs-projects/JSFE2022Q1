@@ -14,10 +14,10 @@ const App: FC = () => {
   return (
         <MainLayout onChange={handleChange}>
           <div className={tab === Tabs.Garage ? '' : 'hided'}>
-            <Garage/>
+            <Garage tab={tab}/>
           </div>
           <div className={tab === Tabs.Winners ? '' : 'hided'}>
-            <Winners/>
+            <Winners tab={tab}/>
           </div>
         </MainLayout>
   );
