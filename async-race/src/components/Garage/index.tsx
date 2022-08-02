@@ -1,11 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CarMethods, ICar, ICarSpeed, IFormMethods } from '../../types/car';
+import { CarMethods, ICar, ICarSpeed, IFormMethods, IWinner } from '../../types/car';
 import { generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
 import { deleteCar, getCars, postCar, putCar } from '../api/garage';
-import { patchDriveCar, patchStartCar, patchStopCar } from '../api/endine';
+import { patchDriveCar, patchStartCar, patchStopCar } from '../api/engine';
 import CarForm from '../CarForm';
+import Win from '../Win';
+import { useTimer } from '../../hooks/useTimer';
+import { getWinner, postWinner } from '../api/winners';
 
 const brokenCarIds: number[] = [];
 const stoppedCarIds: number[] = [];
@@ -14,34 +17,57 @@ const Garage: FC = () => {
   const [cars, setCars] = useState<ICar[]>([]);
   const [fetching, setFetching] = useState<number[]>([]);
   const [selectedCar, setSelectedCar] = useState<ICar | null>(null);
-
+  const [winners, setWinners] = useState<IWinner[]>([]);
+  const [winner, setWinner] = useState<{ win: IWinner, car: ICar } | null>(null);
+  const [times, startTimer, stopTimer] = useTimer();
   useEffect(() => {
     getCars((data: ICar[]) => setCars(data));
   }, []);
 
+  useEffect(() => {
+    if (winners.length === 1) {
+      const win = winners[0];
+      const car = cars.find(c => c.id === win.id);
+      if (car) {
+        setWinner({ win, car });
+        postWinner(
+          { ...win, wins: win.wins + 1 },
+          (w: IWinner) => setWinners(winners.map(i => i.id === w.id ? w : i)),
+        );
+      }
+    }
+  }, [winners]);
+
+  const closeFetching = (id: number): void => {
+    setFetching((prev) => prev.filter((i) => i !== id));
+  };
+
+  const openFetching = (id: number): void => {
+    setFetching((prev) => [...prev, id]);
+  };
+
   const createCar = (car: ICar): void => {
-    setFetching([...fetching, car.id]);
+    openFetching(car.id);
     postCar(
       car,
       (data: ICar) =>  setCars((prevCars) => [...prevCars, data]),
-      () => setFetching((prev) => prev.filter((id) => id !== car.id)),
+      closeFetching,
     );
   };
 
   const handleCreateCars = (): void => {
-    setFetching([...fetching, CARS_COUNT]);
+    openFetching(CARS_COUNT);
     for (let i = 0; i < CARS_COUNT; i++) {
       createCar(generateCar());
     }
-    setFetching((prevFetching) => prevFetching
-      .filter((id) => id !== CARS_COUNT));
+    closeFetching(CARS_COUNT);
   };
 
   const removeCar = (id: number): void => {
-    setFetching([...fetching, id]);
+    openFetching(id);
     deleteCar(id,
       () => setCars((prevCars) => prevCars.filter(car => car.id !== id)),
-      () => setFetching((prev) => prev.filter((i) => i !== id)),
+      closeFetching,
     );
   };
 
@@ -65,27 +91,48 @@ const Garage: FC = () => {
     }
   };
 
+  const onDriveComplete = (id: number): void => {
+    const time = Math.round(times[id] * 100) / 100;
+    stopTimer(id);
+    getWinner(
+      id,
+      (data: IWinner) => setWinners((prev) => [...prev, { ...data, time }]),
+      () => postWinner(
+        { id, time, wins: 0 },
+        (data: IWinner) => setWinners((prev) => [...prev, data]),
+      ),
+    );
+  };
+
+  const onBrokenEngine = (id: number): void => {
+    brokenCarIds.push(id);
+    stopTimer(id);
+  };
+
+  const onFinish = (id: number, data: ICarSpeed) => {
+    animateCar(id, data.distance, data.velocity);
+    patchDriveCar(id,
+      onDriveComplete,
+      onBrokenEngine,
+      closeFetching,
+    );
+  };
+
   const startCar = async (id: number): Promise<void> => {
+    startTimer(id);
     brokenCarIds.splice(brokenCarIds.indexOf(id), 1);
-    setFetching((prev) => [...prev, id]);
-    const onFinish = (data: ICarSpeed) => {
-      animateCar(id, data.distance, data.velocity);
-      patchDriveCar(id,
-        () => brokenCarIds.push(id),
-        () => setFetching((prev) => prev.filter((i) => i !== id)),
-      );
-    };
+    openFetching(id);
     patchStartCar(id, onFinish);
   };
 
   const stopCar = async (id: number): Promise<void> => {
     stoppedCarIds.push(id);
     const el = document.getElementById(`${id}`);
-    setFetching(([...fetching, id]));
+    openFetching(id);
     patchStopCar(
       id,
       () => {
-        setFetching((prev) => prev.filter((i) => i !== id));
+        closeFetching(id);
         if (el) {
           el.style.transform = 'translateX(0px)';
         }
@@ -108,6 +155,14 @@ const Garage: FC = () => {
       case CarMethods.Select:
         setSelectedCar(car);
         break;
+      case CarMethods.RaceStart:
+        await startCar(car.id);
+        break;
+      case CarMethods.Reset:
+        await stopCar(car.id);
+        setWinners([]);
+        setWinner(null);
+        break;
       default:
         break;
     }
@@ -126,21 +181,20 @@ const Garage: FC = () => {
 
   return (
     <section className="container-fluid">
-      <h3>Garage ({cars.length})</h3>
-      <div className="d-flex">
-        <button
-            disabled={fetching.includes(CARS_COUNT)}
-            className="btn btn-success mr-1"
-            onClick={handleCreateCars}
-        >
-          Generate 100 cars
-        </button>
-        <button className="btn btn-primary">Start Race</button>
-      </div>
+      <h4>Garage ({cars.length})</h4>
+      <button
+        disabled={fetching.includes(CARS_COUNT)}
+        className="btn btn-success mb-1"
+        onClick={handleCreateCars}
+      >
+        Generate 100 cars
+      </button>
       <CarForm onSave={handleCarFormSubmit} method={IFormMethods.Create}/>
       <CarForm onSave={handleCarFormSubmit} car={selectedCar} method={IFormMethods.Update}/>
-
       <Cars cars={cars} onChange={handleCarChange} fetching={fetching}/>
+        {winner && (
+            <Win winner={winner}/>
+        )}
     </section>
   );
 };

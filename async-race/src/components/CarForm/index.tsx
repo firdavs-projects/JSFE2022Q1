@@ -9,7 +9,7 @@ interface Props {
 }
 const emptyCar: ICar = {
   name: '',
-  color: '',
+  color: '#000000',
   id: 0,
 };
 
@@ -33,18 +33,16 @@ const CarForm: FC<Props> = ({ car, onSave, method }) => {
     }
     if (!newCar.name.trim()) {
       newCar.name = generated.name;
-    }
-    if (!newCar.color) {
       newCar.color = generated.color;
     }
     setFormData(emptyCar);
     onSave(newCar);
   };
   return (
-    <form className="d-flex" onSubmit={handleSubmit}>
+    <form className="d-flex mt-1" onSubmit={handleSubmit}>
       <input
           onChange={handleChange}
-          className="form-control my-2 mr-1"
+          className="form-control h-75 mb-1 mr-1"
           name="name"
           value={formData.name}
           type="text"
@@ -52,7 +50,7 @@ const CarForm: FC<Props> = ({ car, onSave, method }) => {
       />
       <input
           onChange={handleChange}
-          className="form-control w-50px h-auto my-2 mr-1"
+          className="form-control w-150px h-auto mb-1 mr-1"
           name="color"
           value={formData.color}
           type="color"
@@ -60,7 +58,7 @@ const CarForm: FC<Props> = ({ car, onSave, method }) => {
       <button
         disabled={method === IFormMethods.Update && !car}
         type="submit"
-        className="btn btn-primary my-2 w-50px"
+        className="btn btn-outline-primary w-150px mb-1 h-auto"
       >
         {method === IFormMethods.Update ? 'Update' : 'Add'}
       </button>

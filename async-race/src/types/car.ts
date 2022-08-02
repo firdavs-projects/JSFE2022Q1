@@ -2,9 +2,12 @@ export interface ICar {
   name: string;
   color: string;
   id: number;
-  // status?: string;
-  // speed?: ICarSpeed;
-  // time?: number;
+}
+
+export interface IWinner {
+  wins: number;
+  time: number;
+  id: number;
 }
 
 export enum CarMethods {
@@ -12,6 +15,8 @@ export enum CarMethods {
   Remove = 'REMOVE',
   Start = 'START',
   Stop = 'STOP',
+  RaceStart = 'RACE',
+  Reset = 'RESET',
 }
 
 export interface ICarSpeed {

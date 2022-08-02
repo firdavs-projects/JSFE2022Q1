@@ -5,7 +5,7 @@ import { Methods, Routes } from '../../types';
 export const postCar = async (
   car: ICar,
   finish: (data: ICar) => void,
-  end: () => void,
+  end: (id: number) => void,
 ): Promise<void> => {
   try {
     const res = await fetch(baseUrl + Routes.Garage, {
@@ -19,10 +19,10 @@ export const postCar = async (
       const data: ICar = await res.json();
       finish(data);
     }
-    end();
+    end(car.id);
   } catch (e) {
     console.error(e);
-    end();
+    end(car.id);
   }
 };
 
@@ -60,7 +60,7 @@ export const putCar = async (
 export const deleteCar = async (
   id: number,
   finish: () => void,
-  end: () => void,
+  end: (id: number) => void,
 ): Promise<void> => {
   try {
     const res = await fetch(baseUrl + Routes.Garage + '/' + id, {
@@ -69,10 +69,10 @@ export const deleteCar = async (
     if (res.status === 200) {
       finish();
     }
-    end();
+    end(id);
   } catch (err) {
     console.log(err);
-    end();
+    end(id);
   }
 };
 

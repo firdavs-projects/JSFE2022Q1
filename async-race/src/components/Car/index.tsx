@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { CarMethods, ICar } from '../../types/car';
 import CarIcon from '../CarIcon';
 
@@ -6,35 +6,36 @@ interface Props {
   car: ICar;
   onChange: (car: ICar, method: CarMethods) => void;
   fetching: number[];
+  raceState: [number[], (prev: number[]) => void];
 }
 
-const Car: FC<Props> = ({ car, onChange, fetching }) => {
+const Car: FC<Props> = ({ car, onChange, fetching, raceState }) => {
+  const [isStarted, setIsStarted] = raceState;
   const handleChange = (method: CarMethods): void => {
     onChange(car, method);
   };
-  const [isStarted, setIsStarted] = useState(false);
 
   const handleStart = (): void => {
     handleChange(CarMethods.Start);
-    setIsStarted(true);
+    setIsStarted([...isStarted, car.id]);
   };
   const handleStop = (): void => {
     handleChange(CarMethods.Stop);
-    setIsStarted(false);
+    setIsStarted(isStarted.filter(id => id !== car.id));
   };
 
   return (
     <div className="car">
       <div className="d-flex justify-content-start align-items-center">
         <button
-          disabled={fetching.includes(car.id) || isStarted}
+          disabled={fetching.includes(car.id) || isStarted.includes(car.id)}
           className="btn btn-outline-primary mr-1"
           onClick={handleStart}
         >
           A
         </button>
         <button
-          disabled={!isStarted}
+          disabled={!isStarted.includes(car.id)}
           className="btn btn-outline-dark mr-1"
           onClick={handleStop}
         >

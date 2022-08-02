@@ -14,7 +14,7 @@ const Header: FC<Props> = ({ onChange }) => {
 
   return (
         <header className="header container-fluid mb-3">
-            <h1 className="py-2">Async race</h1>
+            <h2 className="py-2">Async race</h2>
             <nav>
                 <ul className="nav nav-tabs">
                     <li className="nav-item">

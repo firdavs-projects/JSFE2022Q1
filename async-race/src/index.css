@@ -12,6 +12,10 @@
   width: 50px;
 }
 
+.w-150px{
+  width: 150px;
+}
+
 .mr-1{
   margin-right: 0.2rem;
 }
@@ -24,6 +28,26 @@
 .car{
   position: relative;
   bottom: -13px;
+}
+
+.winner-alert{
+  position: fixed;
+  top: 50%;
+  width: 95%;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.51);
+  border-radius: 10px;
+  padding-top: 10px;
+  color: white;
+}
+
+.alert-heading{
+  color: #00d300;
+}
+
+.win-car{
+  bottom: 3px;
+  margin-right: 10px;
 }
 
 .drive{
