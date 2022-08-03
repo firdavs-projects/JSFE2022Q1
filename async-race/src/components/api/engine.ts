@@ -1,12 +1,12 @@
 import { baseUrl } from '../../utils/constants';
 import { Methods, Routes } from '../../types';
-import { ICarSpeed } from '../../types/car';
+import { CarMethods, ICarSpeed } from '../../types/car';
 
 export const patchDriveCar = async (
   id: number,
-  finish: (id: number) => void,
   onError: (id: number) => void,
   end: (id: number) => void,
+  finish?: (id: number) => void,
 ): Promise<void> => {
   try {
     const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=drive`, {
@@ -28,7 +28,8 @@ export const patchDriveCar = async (
 
 export const patchStartCar = async (
   id: number,
-  finish: (id: number, data: ICarSpeed) => void,
+  finish: (id: number, data: ICarSpeed, method: CarMethods) => void,
+  method: CarMethods,
 ): Promise<void> => {
   try {
     const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=started`, {
@@ -36,7 +37,7 @@ export const patchStartCar = async (
     });
     if (res.status === 200) {
       const data: ICarSpeed = await res.json();
-      finish(id, data);
+      finish(id, data, method);
     }
   } catch (err) {
     console.log(err);

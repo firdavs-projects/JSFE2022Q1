@@ -16,7 +16,7 @@ export enum CarMethods {
   Remove = 'REMOVE',
   Start = 'START',
   Stop = 'STOP',
-  RaceStart = 'RACE',
+  Race = 'RACE',
   Reset = 'RESET',
 }
 

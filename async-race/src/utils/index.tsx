@@ -1,4 +1,4 @@
-import { ICar } from '../types/car';
+import { ICar, IWinner } from '../types/car';
 import { cars, models } from './constants';
 
 
@@ -25,3 +25,14 @@ export const generateCar = (): ICar => {
   };
 };
 
+export const updateWinner = (winner: IWinner, isWinner = false): IWinner => {
+  const updated = {
+    ...winner,
+    wins: isWinner ? winner.wins + 1 : winner.wins,
+    time: winner?.lastTime
+      ? winner.lastTime < winner.time ? winner.lastTime : winner.time
+      : winner.time,
+  };
+  delete updated.lastTime;
+  return updated;
+};

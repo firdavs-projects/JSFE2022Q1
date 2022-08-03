@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { CarMethods, ICar, ICarSpeed, IFormMethods, IWinner } from '../../types/car';
-import { generateCar } from '../../utils';
+import { generateCar, updateWinner } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
 import { deleteCar, getCars, postCar, putCar } from '../api/garage';
@@ -20,30 +20,24 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   const [selectedCar, setSelectedCar] = useState<ICar | null>(null);
   const [winners, setWinners] = useState<IWinner[]>([]);
   const [winner, setWinner] = useState<{ win: IWinner, car: ICar } | null>(null);
-  const [times, startTimer, stopTimer] = useTimer();
+  const [, startTimer, stopTimer] = useTimer();
 
   useEffect(() => {
-    if (tab === Tabs.Garage) {
-      getCars(setCars);
-    }
+    if (tab === Tabs.Garage) { getCars(setCars);}
   }, [tab]);
 
   useEffect(() => {
     if (winners.length === 1) {
       const win = winners[0];
       const car = cars.find(c => c.id === win.id);
-      const updated = {
-        ...win,
-        wins: win.wins + 1,
-        time: win?.lastTime
-          ? win.lastTime < win.time ? win.lastTime : win.time
-          : win.time,
-      };
-      delete updated.lastTime;
       if (car) {
         setWinner({ win, car });
-        putWinner(updated);
+        putWinner(updateWinner(win, true));
       }
+    }
+    if (fetching.length === 0 && winners.length !== 0) {
+      const updated = winners.filter(w => w.id !== winner?.win.id).map(win => updateWinner(win));
+      updated.forEach(win => putWinner(win));
     }
   }, [winners]);
 
@@ -101,8 +95,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   };
 
   const onDriveComplete = (id: number): void => {
-    const time = Math.round(times[id] * 100) / 100;
-    stopTimer(id);
+    const time = Math.round(stopTimer(id) * 100) / 100;
     getWinner(
       id,
       (data) => setWinners((prev) => [...prev, { ...data, lastTime: data.time, time }]),
@@ -118,20 +111,20 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
     stopTimer(id);
   };
 
-  const onFinish = (id: number, data: ICarSpeed) => {
+  const onFinish = (id: number, data: ICarSpeed, method: CarMethods) => {
     animateCar(id, data.distance, data.velocity);
     patchDriveCar(id,
-      onDriveComplete,
       onBrokenEngine,
       closeFetching,
+      method === CarMethods.Race ? onDriveComplete : undefined,
     );
   };
 
-  const startCar = async (id: number): Promise<void> => {
-    startTimer(id);
+  const startCar = async (id: number, method: CarMethods): Promise<void> => {
+    if (method === CarMethods.Race) { startTimer(id);}
     brokenCarIds.splice(brokenCarIds.indexOf(id), 1);
     openFetching(id);
-    patchStartCar(id, onFinish);
+    patchStartCar(id, onFinish, method);
   };
 
   const stopCar = async (id: number): Promise<void> => {
@@ -151,7 +144,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   const handleCarChange = async (car: ICar, method: CarMethods): Promise<void> => {
     switch (method) {
       case CarMethods.Start:
-        await startCar(car.id);
+        await startCar(car.id, method);
         break;
       case CarMethods.Stop:
         await stopCar(car.id);
@@ -162,8 +155,8 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       case CarMethods.Select:
         setSelectedCar(car);
         break;
-      case CarMethods.RaceStart:
-        await startCar(car.id);
+      case CarMethods.Race:
+        await startCar(car.id, method);
         break;
       case CarMethods.Reset:
         await stopCar(car.id);

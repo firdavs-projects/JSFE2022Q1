@@ -16,7 +16,7 @@ const Cars: FC<Props> = ({ cars, onChange, fetching }) => {
   const race = (method: CarMethods): void => {
     dataPaginated.forEach(car => onChange(car, method));
     switch (method) {
-      case CarMethods.RaceStart:
+      case CarMethods.Race:
         setIsStarted([...cars.map(c=>c.id)]);
         break;
       case CarMethods.Reset:
@@ -33,7 +33,7 @@ const Cars: FC<Props> = ({ cars, onChange, fetching }) => {
          <button
            disabled={fetching.length > 0 || isStarted.length > 0}
            className="btn btn-primary mr-1"
-           onClick={() => race(CarMethods.RaceStart)}
+           onClick={() => race(CarMethods.Race)}
          >
            Start Race
          </button>
