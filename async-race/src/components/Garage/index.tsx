@@ -45,7 +45,9 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
 
   const removeCar = (id: number): void => {
     openFetching(id);
-    deleteCar(id).finally(() => closeFetching(id));
+    deleteCar(id)
+      .then(() => setCars((prev) => prev.filter((car) => car.id !== id)))
+      .finally(() => closeFetching(id));
     deleteWinner(id).then();
   };
 
