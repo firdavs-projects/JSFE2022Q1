@@ -81,7 +81,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   const startRace = (race: ICar[]): void => {
     startTimer();
     race.forEach(c => openFetching(c.id));
-    const promises = race.map(c => raceStartPromise(c.id, closeFetching));
+    const promises = race.map(c => raceStartPromise(c.id, closeFetching, carsInDrive));
     Promise.any<number>(promises)
       .then((id) => {
         const time = Math.round(stopTimer() * 100) / 100;

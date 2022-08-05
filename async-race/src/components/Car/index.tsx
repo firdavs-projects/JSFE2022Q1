@@ -35,7 +35,7 @@ const Car: FC<Props> = ({ car, onChange, fetching, raceState }) => {
           A
         </button>
         <button
-          disabled={!isStarted.includes(car.id)}
+          disabled={(fetching.includes(car.id) && isStarted.includes(car.id)) || !isStarted.includes(car.id)}
           className="btn btn-outline-dark mr-1"
           onClick={handleStop}
         >

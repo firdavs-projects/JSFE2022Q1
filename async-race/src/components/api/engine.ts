@@ -1,5 +1,5 @@
 import { baseUrl } from '../../utils/constants';
-import { Methods, Routes } from '../../types';
+import { Methods, Routes, StopAnimate } from '../../types';
 import { IDriveInfo } from '../../types/car';
 import { animateCar } from '../../utils';
 
@@ -50,11 +50,13 @@ export const stopEngine = (id: number) => new Promise<void>(async (resolve, reje
 export const raceStartPromise = (
   id: number,
   closeFetch: (id: number) => void,
+  carsInDrive: StopAnimate[],
 ) => new Promise<number>(async (resolve, reject) => {
   try {
     const driveInfo: IDriveInfo = await startEngine(id);
     const driving = driveEngine(id);
-    animateCar(driving, { ...driveInfo, id });
+    const stopAnimate = animateCar(driving, { ...driveInfo, id });
+    carsInDrive.push({ id, stopAnimate });
     driving.then(() => resolve(id)).catch(() => reject(id)).finally(() => closeFetch(id));
   } catch (err) {
     reject(err);
