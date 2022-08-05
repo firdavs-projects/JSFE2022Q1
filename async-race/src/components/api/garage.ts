@@ -2,11 +2,20 @@ import { ICar } from '../../types/car';
 import { baseUrl } from '../../utils/constants';
 import { Methods, Routes } from '../../types';
 
-export const postCar = async (
-  car: ICar,
-  finish: (data: ICar) => void,
-  end: (id: number) => void,
-): Promise<void> => {
+export const deleteCar = (id: number) => new Promise<void>(async (resolve, reject) => {
+  try {
+    const res = await fetch(baseUrl + Routes.Garage + '/' + id, {
+      method: Methods.DELETE,
+    });
+    if (res.ok) {
+      resolve();
+    }
+  } catch (err) {
+    reject();
+  }
+});
+
+export const postCar = (car: ICar) => new Promise<ICar>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Garage, {
       method: Methods.POST,
@@ -17,20 +26,14 @@ export const postCar = async (
     });
     if (res.ok) {
       const data: ICar = await res.json();
-      finish(data);
+      resolve(data);
     }
-    end(car.id);
-  } catch (e) {
-    console.error(e);
-    end(car.id);
+  } catch (err) {
+    reject();
   }
-};
+});
 
-export const putCar = async (
-  car: ICar,
-  finish: (car: ICar) => void,
-  end?: () => void,
-): Promise<void> => {
+export const putCar = (car: ICar) => new Promise<ICar>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Garage + '/' + car.id, {
       method: Methods.PUT,
@@ -44,46 +47,21 @@ export const putCar = async (
     });
     if (res.ok) {
       const data: ICar = await res.json();
-      finish(data);
-    }
-    if (end) {
-      end();
+      resolve(data);
     }
   } catch (err) {
-    console.log(err);
-    if (end) {
-      end();
-    }
+    reject();
   }
-};
+});
 
-export const deleteCar = async (
-  id: number,
-  finish: () => void,
-  end: (id: number) => void,
-): Promise<void> => {
-  try {
-    const res = await fetch(baseUrl + Routes.Garage + '/' + id, {
-      method: Methods.DELETE,
-    });
-    if (res.status === 200) {
-      finish();
-    }
-    end(id);
-  } catch (err) {
-    console.log(err);
-    end(id);
-  }
-};
-
-export const getCars = async (finish: (data: ICar[]) => void): Promise<void> => {
+export const getCars = () => new Promise<ICar[]>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Garage);
     if (res.ok) {
       const data: ICar[] = await res.json();
-      finish(data);
+      resolve(data);
     }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    reject();
   }
-};
+});

@@ -20,10 +20,11 @@ export enum CarMethods {
   Reset = 'RESET',
 }
 
-export interface ICarSpeed {
+export type IDriveInfo = {
   distance: number;
   velocity: number;
-}
+  id?: number;
+};
 
 export enum IFormMethods {
   Create = 'CREATE',

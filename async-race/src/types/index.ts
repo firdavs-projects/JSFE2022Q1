@@ -3,6 +3,17 @@ export enum Tabs {
   Winners = 'winners',
 }
 
+export interface StopAnimate {
+  id: number;
+  stopAnimate: () => void;
+}
+
+export enum FilterStatus {
+  default = 'default',
+  asc = 'asc',
+  desc = 'desc',
+}
+
 export enum Routes {
   Garage = '/garage',
   Winners = '/winners',

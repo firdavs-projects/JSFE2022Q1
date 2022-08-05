@@ -1,34 +1,29 @@
 import { useState } from 'react';
 
 
-export const useTimer = (): [{ [p: number]: number }, ((id: number) => void), ((id: number) => number)] => {
-  const [timers, setTimer] = useState<{
-    [key: number]: NodeJS.Timer;
-  }>({});
-  const [times, setTime] = useState<{
-    [key: number]: number;
-  }>({});
+export const useTimer = (): [(() => void), (() => number)] => {
+  const [timer, setTimer] = useState<{ id?: number }>({});
+  const [time, setTime] = useState<{ count?: number }>({});
 
-  const start = (id: number) => {
-    let time = 0;
-    const timer = setInterval(() => {
-      time += 0.01;
-      times[id] = time;
-      timers[id] = timer;
-      setTime(times);
-      setTimer(timers);
+  const start = () => {
+    let count = 0;
+    timer.id = window.setInterval(() => {
+      count += 0.01;
+      time.count = count;
+      setTime(time);
     }, 10);
+    setTimer(timer);
   };
 
-  const stop = (id: number): number => {
-    clearInterval(timers[id]);
-    const currentTime = times[id];
-    delete times[id];
-    delete timers[id];
-    setTime(times);
-    setTimer(timers);
-    return currentTime;
+  const stop = (): number => {
+    const current = time.count || 0;
+    clearInterval(timer.id);
+    delete timer.id;
+    delete time.count;
+    setTime(time);
+    setTimer(timer);
+    return current;
   };
 
-  return [times, start, stop ];
+  return [start, stop ];
 };

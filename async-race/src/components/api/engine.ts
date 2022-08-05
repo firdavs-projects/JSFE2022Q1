@@ -1,57 +1,62 @@
 import { baseUrl } from '../../utils/constants';
 import { Methods, Routes } from '../../types';
-import { CarMethods, ICarSpeed } from '../../types/car';
+import { IDriveInfo } from '../../types/car';
+import { animateCar } from '../../utils';
 
-export const patchDriveCar = async (
-  id: number,
-  onError: (id: number) => void,
-  end: (id: number) => void,
-  finish?: (id: number) => void,
-): Promise<void> => {
+export const driveEngine = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=drive`, {
       method: Methods.PATCH,
     });
-    if (res.ok && finish) {
-      finish(id);
+    if (res.ok) {
+      resolve();
     }
     if (res.status === 500) {
-      console.log('Car is broken');
-      onError(id);
+      reject(true);
     }
-    end(id);
   } catch (err) {
     console.log(err);
-    end(id);
+    reject();
   }
-};
+});
 
-export const patchStartCar = async (
-  id: number,
-  finish: (id: number, data: ICarSpeed, method: CarMethods) => void,
-  method: CarMethods,
-): Promise<void> => {
+export const startEngine = (id: number) => new Promise<IDriveInfo>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=started`, {
       method: Methods.PATCH,
     });
     if (res.status === 200) {
-      const data: ICarSpeed = await res.json();
-      finish(id, data, method);
+      const data: IDriveInfo = await res.json();
+      resolve(data);
     }
   } catch (err) {
-    console.log(err);
+    reject(err);
   }
-};
+});
 
-export const patchStopCar = async (id: number, end: () => void ): Promise<void> => {
+export const stopEngine = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
-    await fetch(baseUrl + Routes.Engine + `?id=${id}&status=stopped`, {
+    const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=stopped`, {
       method: Methods.PATCH,
     });
-    end();
+    if (res.status === 200) {
+      resolve();
+    }
   } catch (err) {
-    console.log(err);
-    end();
+    reject(err);
   }
-};
+});
+
+export const raceStartPromise = (
+  id: number,
+  closeFetch: (id: number) => void,
+) => new Promise<number>(async (resolve, reject) => {
+  try {
+    const driveInfo: IDriveInfo = await startEngine(id);
+    const driving = driveEngine(id);
+    animateCar(driving, { ...driveInfo, id });
+    driving.then(() => resolve(id)).catch(() => reject(id)).finally(() => closeFetch(id));
+  } catch (err) {
+    reject(err);
+  }
+});

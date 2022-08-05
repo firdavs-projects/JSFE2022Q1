@@ -2,38 +2,44 @@ import { IWinner } from '../../types/car';
 import { baseUrl } from '../../utils/constants';
 import { Methods, Routes } from '../../types';
 
-export const getWinner = async (
-  id: number,
-  finish: (data: IWinner) => void,
-  ifNotFound: ()=> void,
-): Promise<void> => {
+export const getWinner = (id: number) => new Promise<IWinner>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Winners + '/' + id );
     if (res.ok) {
       const data: IWinner = await res.json();
-      finish(data);
+      resolve(data);
     }
-    if (res.status === 404) {
-      ifNotFound();
-    }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    reject();
   }
-};
+});
 
-export const getWinners = async (finish: (data: IWinner[]) => void): Promise<void> => {
+export const getWinners = () => new Promise<IWinner[]>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Winners );
     if (res.ok) {
       const data: IWinner[] = await res.json();
-      finish(data.sort((a, b) => a.time - b.time));
+      resolve(data);
     }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    reject();
   }
-};
+});
 
-export const postWinner = async (winner: IWinner, finish: (winner: IWinner) => void ): Promise<void> => {
+export const deleteWinner = (id: number) => new Promise<void>(async (resolve, reject) => {
+  try {
+    const res = await fetch(baseUrl + Routes.Winners + '/' + id, {
+      method: Methods.DELETE,
+    });
+    if (res.ok) {
+      resolve();
+    }
+  } catch (err) {
+    reject();
+  }
+});
+
+export const postWinner = (winner: IWinner) => new Promise<IWinner>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Winners, {
       method: Methods.POST,
@@ -42,25 +48,48 @@ export const postWinner = async (winner: IWinner, finish: (winner: IWinner) => v
     });
     if (res.ok) {
       const data: IWinner = await res.json();
-      finish(data);
+      resolve(data);
     }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    reject();
   }
-};
+});
 
-export const putWinner = async (winner: IWinner, finish?: (winner: IWinner) => void ): Promise<void> => {
+export const putWinner = (winner: IWinner) => new Promise<IWinner>(async (resolve, reject) => {
   try {
     const res = await fetch(baseUrl + Routes.Winners + '/' + winner.id, {
       method: Methods.PUT,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(winner),
     });
-    if (res.ok && finish) {
+    if (res.ok) {
       const data: IWinner = await res.json();
-      finish(data);
+      resolve(data);
     }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    reject();
   }
-};
+});
+
+export const saveWinnerById = (id: number, time: number) => new Promise<IWinner>(async (resolve, reject) => {
+  try {
+    const res = await fetch(baseUrl + Routes.Winners + '/' + id );
+    if (res.ok) {
+      const data: IWinner = await res.json();
+      const winner = {
+        ...data,
+        time: data.time < time ? data.time : time,
+        wins: data.wins + 1,
+      };
+      const updated = putWinner(winner);
+      resolve(updated);
+    }
+    if (res.status === 404) {
+      const newWinner: IWinner = await postWinner({ id, time, wins: 1 });
+      resolve(newWinner);
+    }
+  } catch (err) {
+    console.log(err);
+    reject();
+  }
+});

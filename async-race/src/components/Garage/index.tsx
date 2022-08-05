@@ -1,182 +1,134 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CarMethods, ICar, ICarSpeed, IFormMethods, IWinner } from '../../types/car';
-import { generateCar, updateWinner } from '../../utils';
+import { CarMethods, ICar, IFormMethods } from '../../types/car';
+import { animateCar, generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
 import { deleteCar, getCars, postCar, putCar } from '../api/garage';
-import { patchDriveCar, patchStartCar, patchStopCar } from '../api/engine';
+import { stopEngine, raceStartPromise, startEngine, driveEngine } from '../api/engine';
 import CarForm from '../CarForm';
 import Win from '../Win';
 import { useTimer } from '../../hooks/useTimer';
-import { getWinner, postWinner, putWinner } from '../api/winners';
-import { Tabs } from '../../types';
+import { deleteWinner, saveWinnerById } from '../api/winners';
+import { StopAnimate, Tabs } from '../../types';
 
-const brokenCarIds: number[] = [];
-const stoppedCarIds: number[] = [];
+const carsInDrive: StopAnimate[] = [];
 
 const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   const [cars, setCars] = useState<ICar[]>([]);
   const [fetching, setFetching] = useState<number[]>([]);
   const [selectedCar, setSelectedCar] = useState<ICar | null>(null);
-  const [winners, setWinners] = useState<IWinner[]>([]);
-  const [winner, setWinner] = useState<{ win: IWinner, car: ICar } | null>(null);
-  const [, startTimer, stopTimer] = useTimer();
+  const [winner, setWinner] = useState<{ time: number, car: ICar } | null>(null);
+  const [startTimer, stopTimer] = useTimer();
 
   useEffect(() => {
-    if (tab === Tabs.Garage) { getCars(setCars);}
+    if (tab === Tabs.Garage) { getCars().then(setCars);}
   }, [tab]);
 
-  useEffect(() => {
-    if (winners.length === 1) {
-      const win = winners[0];
-      const car = cars.find(c => c.id === win.id);
-      if (car) {
-        setWinner({ win, car });
-        putWinner(updateWinner(win, true));
-      }
-    }
-    if (fetching.length === 0 && winners.length !== 0) {
-      const updated = winners.filter(w => w.id !== winner?.win.id).map(win => updateWinner(win));
-      updated.forEach(win => putWinner(win));
-    }
-  }, [winners]);
+  const closeFetching = (id: number): void => setFetching(
+    (prev) => prev.filter((i) => i !== id),
+  );
 
-  const closeFetching = (id: number): void => {
-    setFetching((prev) => prev.filter((i) => i !== id));
-  };
-
-  const openFetching = (id: number): void => {
-    setFetching((prev) => [...prev, id]);
-  };
+  const openFetching = (id: number): void => setFetching((prev) => [...prev, id]);
 
   const createCar = (car: ICar): void => {
     openFetching(car.id);
-    postCar(
-      car,
-      (data: ICar) =>  setCars((prevCars) => [...prevCars, data]),
-      closeFetching,
-    );
+    postCar(car)
+      .then((data: ICar) =>  setCars((prev) => [...prev, data]))
+      .finally(() => closeFetching(car.id));
   };
 
   const handleCreateCars = (): void => {
-    openFetching(CARS_COUNT);
     for (let i = 0; i < CARS_COUNT; i++) {
       createCar(generateCar());
     }
-    closeFetching(CARS_COUNT);
   };
 
   const removeCar = (id: number): void => {
     openFetching(id);
-    deleteCar(id,
-      () => setCars((prevCars) => prevCars.filter(car => car.id !== id)),
-      closeFetching,
-    );
+    deleteCar(id).finally(() => closeFetching(id));
+    deleteWinner(id).then();
   };
 
-  const animateCar = (id: number, distance: number, velocity: number): void => {
-    const screenWidth = document.documentElement.clientWidth;
-    const endX = screenWidth - 100;
-    const duration = distance / velocity / 1000;
-    const el = document.getElementById(`${id}`);
-    if (el) {
-      let currentX = el.getBoundingClientRect().x;
-      const framesCount = duration * 60;
-      const step = (endX - currentX) / framesCount;
-      const tick = (): void => {
-        currentX += step;
-        el.style.transform = `translateX(${currentX}px)`;
-        if (currentX < endX && !brokenCarIds.includes(id) && !stoppedCarIds.includes(id)) {
-          requestAnimationFrame(tick);
-        }
-      };
-      tick();
+  const startCar = async (id: number): Promise<void> => {
+    openFetching(id);
+    const info = await startEngine(id);
+    const driving = driveEngine(id).finally(()=> closeFetching(id));
+    const stopAnimate = animateCar(driving, { ...info, id });
+    carsInDrive.push({ id, stopAnimate });
+  };
+
+  const stopCar = (id: number): void => {
+    carsInDrive.find(c => c.id === id)?.stopAnimate();
+    carsInDrive.splice(carsInDrive.findIndex(c => c.id === id), 1);
+    const carEl = document.getElementById(`${id}`);
+    openFetching(id);
+    stopEngine(id).finally(() => {
+      closeFetching(id);
+      if (carEl) { carEl.style.transform = 'translateX(0px)'; }
+    });
+  };
+
+  const saveWinner = (id: number, time: number): void => {
+    const car = cars.find(c => c.id === id);
+    saveWinnerById(id, time).then();
+    if (car) {
+      setWinner({ time, car });
     }
   };
 
-  const onDriveComplete = (id: number): void => {
-    const time = Math.round(stopTimer(id) * 100) / 100;
-    getWinner(
-      id,
-      (data) => setWinners((prev) => [...prev, { ...data, lastTime: data.time, time }]),
-      () => postWinner(
-        { id, time, wins: 0 },
-        (data: IWinner) => setWinners((prev) => [...prev, data]),
-      ),
-    );
+  const startRace = (race: ICar[]): void => {
+    startTimer();
+    race.forEach(c => openFetching(c.id));
+    const promises = race.map(c => raceStartPromise(c.id, closeFetching));
+    Promise.any<number>(promises)
+      .then((id) => {
+        const time = Math.round(stopTimer() * 100) / 100;
+        saveWinner(id, time);
+      })
+      .catch(() => stopTimer());
   };
 
-  const onBrokenEngine = (id: number): void => {
-    brokenCarIds.push(id);
-    stopTimer(id);
+  const handleCarFormSubmit = (car: ICar): void => {
+    if (selectedCar?.id === car.id) {
+      putCar(car)
+        .then(() => setCars((prev) => prev.map((c) => c.id === car.id ? car : c)));
+      setSelectedCar(null);
+      return;
+    }
+    createCar(car);
   };
 
-  const onFinish = (id: number, data: ICarSpeed, method: CarMethods) => {
-    animateCar(id, data.distance, data.velocity);
-    patchDriveCar(id,
-      onBrokenEngine,
-      closeFetching,
-      method === CarMethods.Race ? onDriveComplete : undefined,
-    );
-  };
-
-  const startCar = async (id: number, method: CarMethods): Promise<void> => {
-    if (method === CarMethods.Race) { startTimer(id);}
-    brokenCarIds.splice(brokenCarIds.indexOf(id), 1);
-    openFetching(id);
-    patchStartCar(id, onFinish, method);
-  };
-
-  const stopCar = async (id: number): Promise<void> => {
-    stoppedCarIds.push(id);
-    const el = document.getElementById(`${id}`);
-    openFetching(id);
-    patchStopCar(
-      id,
-      () => {
-        closeFetching(id);
-        if (el) { el.style.transform = 'translateX(0px)'; }
-        stoppedCarIds.splice(stoppedCarIds.indexOf(id), 1);
-      },
-    );
-  };
-
-  const handleCarChange = async (car: ICar, method: CarMethods): Promise<void> => {
+  const handleCarDrive = (car: ICar, method: CarMethods): void => {
     switch (method) {
       case CarMethods.Start:
-        await startCar(car.id, method);
+        startCar(car.id).then();
         break;
       case CarMethods.Stop:
-        await stopCar(car.id);
+        stopCar(car.id);
         break;
       case CarMethods.Remove:
-        await removeCar(car.id);
+        removeCar(car.id);
         break;
       case CarMethods.Select:
         setSelectedCar(car);
-        break;
-      case CarMethods.Race:
-        await startCar(car.id, method);
-        break;
-      case CarMethods.Reset:
-        await stopCar(car.id);
-        setWinners([]);
-        setWinner(null);
         break;
       default:
         break;
     }
   };
 
-  const handleCarFormSubmit = (car: ICar): void => {
-    if (selectedCar?.id === car.id) {
-      putCar(car,
-        () => setCars((prevCars) => prevCars.map((c) => c.id === car.id ? car : c)),
-      );
-      setSelectedCar(null);
-      return;
+  const handleRace = (carsInRace: ICar[], method: CarMethods): void => {
+    switch (method) {
+      case CarMethods.Race:
+        startRace(carsInRace);
+        break;
+      case CarMethods.Reset:
+        carsInRace.forEach(c => stopCar(c.id));
+        setWinner(null);
+        break;
+      default:
+        break;
     }
-    createCar(car);
   };
 
   return (
@@ -191,7 +143,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       </button>
       <CarForm onSave={handleCarFormSubmit} method={IFormMethods.Create}/>
       <CarForm onSave={handleCarFormSubmit} car={selectedCar} method={IFormMethods.Update}/>
-      <Cars cars={cars} onChange={handleCarChange} fetching={fetching}/>
+      <Cars cars={cars} onDrive={handleCarDrive} onRace={handleRace} fetching={fetching}/>
       {winner && (<Win winner={winner}/>)}
     </section>
   );

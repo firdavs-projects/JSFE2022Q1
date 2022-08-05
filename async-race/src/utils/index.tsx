@@ -1,4 +1,4 @@
-import { ICar, IWinner } from '../types/car';
+import { ICar, IDriveInfo, IWinner } from '../types/car';
 import { cars, models } from './constants';
 
 
@@ -35,4 +35,29 @@ export const updateWinner = (winner: IWinner, isWinner = false): IWinner => {
   };
   delete updated.lastTime;
   return updated;
+};
+
+export const animateCar = ( driving: Promise<void>, driveInfo: IDriveInfo): () => void => {
+  const { distance, velocity, id } = driveInfo;
+  let isDriving = true;
+  const stopAnimation = (): void => {isDriving = false;};
+  driving.catch(()=> isDriving = false);
+  const screenWidth = document.documentElement.clientWidth;
+  const endX = screenWidth - 100;
+  const duration = distance / velocity / 1000;
+  const carEL = document.getElementById(`${id}`);
+  if (carEL) {
+    let currentX = carEL.getBoundingClientRect().x;
+    const framesCount = duration * 60;
+    const step = (endX - currentX) / framesCount;
+    const tick = (): void => {
+      currentX += step;
+      carEL.style.transform = `translateX(${currentX}px)`;
+      if (currentX < endX && isDriving) {
+        requestAnimationFrame(tick);
+      }
+    };
+    tick();
+  }
+  return stopAnimation;
 };

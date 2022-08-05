@@ -5,9 +5,12 @@ import { WINNERS_LIMIT } from '../../utils/constants';
 import { getWinners } from '../api/winners';
 import { getCars } from '../api/garage';
 import { Tabs } from '../../types';
+import WinnersTable from '../WinnersTable';
+import { useFilter } from '../../hooks/useFilter';
 
 const Winners: FC<{ tab: Tabs }> = ({ tab }) => {
   const [winners, setWinners] = useState<IWinner[]>([]);
+  const [setWinnersWithFilters, byWins, byTime, winsStatus, timeStatus] = useFilter(winners, setWinners);
   const [cars, setCars] = useState<ICar[]>([]);
   const [
     page,
@@ -19,25 +22,27 @@ const Winners: FC<{ tab: Tabs }> = ({ tab }) => {
 
   useEffect(() => {
     if (tab === Tabs.Winners) {
-      getWinners(setWinners);
-      getCars(setCars);
+      getWinners().then(setWinnersWithFilters);
+      getCars().then(setCars);
     }
   }, [tab]);
 
   return (
         <section className="container-fluid">
-          <h3>Winners</h3>
-          <div className="winners">
-            {dataPaginated.map((winner, i) => (
-              <div key={winner.id}>
-                  {i + 1} | {cars.find(car => car.id === winner.id)?.name} | {winner.time}s | {winner.wins}wins
-              </div>
-            ))}
-          </div>
-          <div className="d-flex">
-            <button disabled={page === 1} className="btn btn-outline-primary" onClick={prevPage}>Prev</button>
-            {page} of {pages}
-            <button disabled={page === pages} className="btn btn-outline-primary" onClick={nextPage}>Next</button>
+          <h3>Winners ({winners.length})</h3>
+          <WinnersTable
+            winners={dataPaginated}
+            cars={cars}
+            page={page}
+            byWins={byWins}
+            byTime={byTime}
+            winsStatus={winsStatus}
+            timeStatus={timeStatus}
+          />
+          <div className="d-flex my-4">
+            <button disabled={page === 1} className="btn btn-primary" onClick={prevPage}>Prev</button>
+            <span className="mx-2">{page} of {pages}</span>
+            <button disabled={page === pages} className="btn btn-primary" onClick={nextPage}>Next</button>
           </div>
         </section>
   );
