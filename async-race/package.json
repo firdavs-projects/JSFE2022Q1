@@ -2,6 +2,7 @@
   "name": "async-race",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://firdavs-projects.github.io/async-race-ts",
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",
