@@ -95,7 +95,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       return;
     }
     createCar(car);
-  }, []);
+  }, [selectedCar]);
 
   const handleCarDrive = useCallback((car: ICar, method: CarMethods): void => {
     switch (method) {
