@@ -1,10 +1,10 @@
 import { IWinner } from '../types/car';
-import { baseUrl } from '../utils/constants';
+import { BASE_URL } from '../utils/constants';
 import { Methods, Routes } from '../types';
 
 export const getWinner = (id: number) => new Promise<IWinner>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners + '/' + id );
+    const res = await fetch(BASE_URL + Routes.Winners + '/' + id );
     if (res.ok) {
       const data: IWinner = await res.json();
       resolve(data);
@@ -16,7 +16,7 @@ export const getWinner = (id: number) => new Promise<IWinner>(async (resolve, re
 
 export const getWinners = () => new Promise<IWinner[]>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners );
+    const res = await fetch(BASE_URL + Routes.Winners );
     if (res.ok) {
       const data: IWinner[] = await res.json();
       resolve(data);
@@ -28,7 +28,7 @@ export const getWinners = () => new Promise<IWinner[]>(async (resolve, reject) =
 
 export const deleteWinner = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners + '/' + id, {
+    const res = await fetch(BASE_URL + Routes.Winners + '/' + id, {
       method: Methods.DELETE,
     });
     if (res.ok) {
@@ -41,7 +41,7 @@ export const deleteWinner = (id: number) => new Promise<void>(async (resolve, re
 
 export const postWinner = (winner: IWinner) => new Promise<IWinner>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners, {
+    const res = await fetch(BASE_URL + Routes.Winners, {
       method: Methods.POST,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(winner),
@@ -57,7 +57,7 @@ export const postWinner = (winner: IWinner) => new Promise<IWinner>(async (resol
 
 export const putWinner = (winner: IWinner) => new Promise<IWinner>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners + '/' + winner.id, {
+    const res = await fetch(BASE_URL + Routes.Winners + '/' + winner.id, {
       method: Methods.PUT,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(winner),
@@ -73,7 +73,7 @@ export const putWinner = (winner: IWinner) => new Promise<IWinner>(async (resolv
 
 export const saveWinnerById = (id: number, time: number) => new Promise<IWinner>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Winners + '/' + id );
+    const res = await fetch(BASE_URL + Routes.Winners + '/' + id );
     if (res.ok) {
       const data: IWinner = await res.json();
       const winner = {

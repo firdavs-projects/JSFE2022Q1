@@ -1,11 +1,11 @@
-import { baseUrl } from '../utils/constants';
+import { BASE_URL } from '../utils/constants';
 import { Methods, Routes, StopAnimate } from '../types';
 import { IDriveInfo } from '../types/car';
 import { animateCar } from '../utils';
 
 export const driveEngine = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=drive`, {
+    const res = await fetch(BASE_URL + Routes.Engine + `?id=${id}&status=drive`, {
       method: Methods.PATCH,
     });
     if (res.ok) {
@@ -21,7 +21,7 @@ export const driveEngine = (id: number) => new Promise<void>(async (resolve, rej
 
 export const startEngine = (id: number) => new Promise<IDriveInfo>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=started`, {
+    const res = await fetch(BASE_URL + Routes.Engine + `?id=${id}&status=started`, {
       method: Methods.PATCH,
     });
     if (res.status === 200) {
@@ -35,7 +35,7 @@ export const startEngine = (id: number) => new Promise<IDriveInfo>(async (resolv
 
 export const stopEngine = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
-    const res = await fetch(baseUrl + Routes.Engine + `?id=${id}&status=stopped`, {
+    const res = await fetch(BASE_URL + Routes.Engine + `?id=${id}&status=stopped`, {
       method: Methods.PATCH,
     });
     if (res.status === 200) {

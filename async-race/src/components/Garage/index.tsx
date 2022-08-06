@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { CarMethods, ICar, IFormMethods } from '../../types/car';
 import { animateCar, generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
@@ -90,7 +90,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       .catch(() => stopTimer());
   };
 
-  const handleCarFormSubmit = (car: ICar): void => {
+  const handleCarFormSubmit = useCallback((car: ICar): void => {
     if (selectedCar?.id === car.id) {
       putCar(car)
         .then(() => setCars((prev) => prev.map((c) => c.id === car.id ? car : c)));
@@ -98,9 +98,9 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       return;
     }
     createCar(car);
-  };
+  }, []);
 
-  const handleCarDrive = (car: ICar, method: CarMethods): void => {
+  const handleCarDrive = useCallback((car: ICar, method: CarMethods): void => {
     switch (method) {
       case CarMethods.Start:
         startCar(car.id).then();
@@ -117,9 +117,9 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       default:
         break;
     }
-  };
+  }, []);
 
-  const handleRace = (carsInRace: ICar[], method: CarMethods): void => {
+  const handleRace = useCallback((carsInRace: ICar[], method: CarMethods): void => {
     switch (method) {
       case CarMethods.Race:
         startRace(carsInRace);
@@ -131,7 +131,7 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
       default:
         break;
     }
-  };
+  }, []);
 
   return (
     <section className="container-fluid">
