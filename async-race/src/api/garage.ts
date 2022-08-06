@@ -65,3 +65,15 @@ export const getCars = () => new Promise<ICar[]>(async (resolve, reject) => {
     reject();
   }
 });
+
+export const getCar = (id: number) => new Promise<ICar>(async (resolve, reject) => {
+  try {
+    const res = await fetch(BASE_URL + Routes.Garage + '/' + id);
+    if (res.ok) {
+      const data: ICar = await res.json();
+      resolve(data);
+    }
+  } catch {
+    reject();
+  }
+});

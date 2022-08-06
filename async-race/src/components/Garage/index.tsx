@@ -3,7 +3,7 @@ import { CarMethods, ICar, IFormMethods } from '../../types/car';
 import { animateCar, generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
-import { deleteCar, getCars, postCar, putCar } from '../../api/garage';
+import { deleteCar, getCar, getCars, postCar, putCar } from '../../api/garage';
 import { stopEngine, raceStartPromise, startEngine, driveEngine } from '../../api/engine';
 import CarForm from '../CarForm';
 import Win from '../Win';
@@ -71,11 +71,8 @@ const Garage: FC<{ tab: Tabs }> = ({ tab }) => {
   };
 
   const saveWinner = (id: number, time: number): void => {
-    const car = cars.find(c => c.id === id);
+    getCar(id).then(car => setWinner({ time, car }));
     saveWinnerById(id, time).then();
-    if (car) {
-      setWinner({ time, car });
-    }
   };
 
   const startRace = (race: ICar[]): void => {
