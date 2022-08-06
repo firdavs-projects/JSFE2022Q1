@@ -1,7 +1,7 @@
-import { baseUrl } from '../../utils/constants';
-import { Methods, Routes, StopAnimate } from '../../types';
-import { IDriveInfo } from '../../types/car';
-import { animateCar } from '../../utils';
+import { baseUrl } from '../utils/constants';
+import { Methods, Routes, StopAnimate } from '../types';
+import { IDriveInfo } from '../types/car';
+import { animateCar } from '../utils';
 
 export const driveEngine = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
@@ -14,8 +14,7 @@ export const driveEngine = (id: number) => new Promise<void>(async (resolve, rej
     if (res.status === 500) {
       reject(true);
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     reject();
   }
 });
@@ -29,8 +28,8 @@ export const startEngine = (id: number) => new Promise<IDriveInfo>(async (resolv
       const data: IDriveInfo = await res.json();
       resolve(data);
     }
-  } catch (err) {
-    reject(err);
+  } catch {
+    reject();
   }
 });
 
@@ -42,8 +41,8 @@ export const stopEngine = (id: number) => new Promise<void>(async (resolve, reje
     if (res.status === 200) {
       resolve();
     }
-  } catch (err) {
-    reject(err);
+  } catch {
+    reject();
   }
 });
 
@@ -58,7 +57,7 @@ export const raceStartPromise = (
     const stopAnimate = animateCar(driving, { ...driveInfo, id });
     carsInDrive.push({ id, stopAnimate });
     driving.then(() => resolve(id)).catch(() => reject(id)).finally(() => closeFetch(id));
-  } catch (err) {
-    reject(err);
+  } catch  {
+    reject();
   }
 });

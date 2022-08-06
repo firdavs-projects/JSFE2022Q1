@@ -1,6 +1,6 @@
-import { IWinner } from '../../types/car';
-import { baseUrl } from '../../utils/constants';
-import { Methods, Routes } from '../../types';
+import { IWinner } from '../types/car';
+import { baseUrl } from '../utils/constants';
+import { Methods, Routes } from '../types';
 
 export const getWinner = (id: number) => new Promise<IWinner>(async (resolve, reject) => {
   try {
@@ -9,7 +9,7 @@ export const getWinner = (id: number) => new Promise<IWinner>(async (resolve, re
       const data: IWinner = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -21,7 +21,7 @@ export const getWinners = () => new Promise<IWinner[]>(async (resolve, reject) =
       const data: IWinner[] = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -34,7 +34,7 @@ export const deleteWinner = (id: number) => new Promise<void>(async (resolve, re
     if (res.ok) {
       resolve();
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -50,7 +50,7 @@ export const postWinner = (winner: IWinner) => new Promise<IWinner>(async (resol
       const data: IWinner = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -66,7 +66,7 @@ export const putWinner = (winner: IWinner) => new Promise<IWinner>(async (resolv
       const data: IWinner = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -88,8 +88,7 @@ export const saveWinnerById = (id: number, time: number) => new Promise<IWinner>
       const newWinner: IWinner = await postWinner({ id, time, wins: 1 });
       resolve(newWinner);
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     reject();
   }
 });

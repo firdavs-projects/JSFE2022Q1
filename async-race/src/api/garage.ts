@@ -1,6 +1,6 @@
-import { ICar } from '../../types/car';
-import { baseUrl } from '../../utils/constants';
-import { Methods, Routes } from '../../types';
+import { ICar } from '../types/car';
+import { baseUrl } from '../utils/constants';
+import { Methods, Routes } from '../types';
 
 export const deleteCar = (id: number) => new Promise<void>(async (resolve, reject) => {
   try {
@@ -10,7 +10,7 @@ export const deleteCar = (id: number) => new Promise<void>(async (resolve, rejec
     if (res.ok) {
       resolve();
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -28,7 +28,7 @@ export const postCar = (car: ICar) => new Promise<ICar>(async (resolve, reject) 
       const data: ICar = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -49,7 +49,7 @@ export const putCar = (car: ICar) => new Promise<ICar>(async (resolve, reject) =
       const data: ICar = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });
@@ -61,7 +61,7 @@ export const getCars = () => new Promise<ICar[]>(async (resolve, reject) => {
       const data: ICar[] = await res.json();
       resolve(data);
     }
-  } catch (err) {
+  } catch {
     reject();
   }
 });

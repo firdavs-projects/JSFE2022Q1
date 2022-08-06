@@ -3,12 +3,12 @@ import { CarMethods, ICar, IFormMethods } from '../../types/car';
 import { animateCar, generateCar } from '../../utils';
 import { CARS_COUNT } from '../../utils/constants';
 import Cars from '../Cars';
-import { deleteCar, getCars, postCar, putCar } from '../api/garage';
-import { stopEngine, raceStartPromise, startEngine, driveEngine } from '../api/engine';
+import { deleteCar, getCars, postCar, putCar } from '../../api/garage';
+import { stopEngine, raceStartPromise, startEngine, driveEngine } from '../../api/engine';
 import CarForm from '../CarForm';
 import Win from '../Win';
 import { useTimer } from '../../hooks/useTimer';
-import { deleteWinner, saveWinnerById } from '../api/winners';
+import { deleteWinner, saveWinnerById } from '../../api/winners';
 import { StopAnimate, Tabs } from '../../types';
 
 const carsInDrive: StopAnimate[] = [];
