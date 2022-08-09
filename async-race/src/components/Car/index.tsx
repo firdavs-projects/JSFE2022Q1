@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { CarMethods, ICar } from '../../types/car';
 import CarIcon from '../CarIcon';
+import finishIcon from '../../assets/icons/finish.png';
 
 interface Props {
   car: ICar;
@@ -59,6 +60,7 @@ const Car: FC<Props> = ({ car, onChange, fetching, raceState }) => {
       </div>
       <div className="road">
         <CarIcon color={car.color} id={car.id.toString()}/>
+        <img src={finishIcon} alt="finish"/>
       </div>
     </div>
   );
