@@ -1,0 +1,54 @@
+.sources {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 120px;
+    overflow: auto;
+    align-items: center;
+    font: 300 1em 'Fira Sans', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.source__item {
+    background: none;
+    border: 2px solid #faea68;
+    border-radius: 5px;
+    font: inherit;
+    line-height: 1;
+    margin: 0.5em;
+    padding: 1em 2em;
+    color: #222222;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.source__item.active {
+    border-color: orange;
+    color: orange;
+    box-shadow: 0 0.5em 0.5em -0.4em orange;
+    transform: translateY(-0.25em);
+}
+.source__item.active span {
+    font-weight: bold;
+}
+
+.source__item-name {
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .sources {
+        height: 80px;
+        font: 300 0.8em 'Fira Sans', sans-serif;
+    }
+
+    .source__item {
+        padding: 0.9em 2em;
+        margin: 0.8em;
+    }
+}
