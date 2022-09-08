@@ -1,0 +1,70 @@
+.hided {
+  display: none;
+}
+
+.btn{
+  font-size: 0.7rem;
+  padding: 0.15rem!important;
+  border-radius: 0.2rem;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.w-50px{
+  width: 50px!important;
+}
+
+.w-150px{
+  width: 150px!important;
+}
+
+.mr-1{
+  margin-right: 0.2rem;
+}
+
+.road{
+  border-bottom: solid 1px #ccc;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 80px;
+}
+
+.car{
+  position: relative;
+  bottom: -13px;
+}
+
+.winner-alert{
+  position: fixed;
+  top: 50%;
+  width: 95%;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.51);
+  border-radius: 10px;
+  padding-top: 10px;
+  color: white;
+}
+
+.alert-heading{
+  color: #00d300;
+}
+
+.win-car{
+  bottom: 3px;
+  margin-right: 10px;
+}
+
+.win-table-car{
+  bottom: -5px;
+  left: -10px;
+  height: 50px;
+  position: absolute;
+}
+
+.drive{
+  transform: translateX(85vw);
+}
