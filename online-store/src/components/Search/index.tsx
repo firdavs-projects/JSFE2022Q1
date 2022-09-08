@@ -1,0 +1,63 @@
+import React, {FC, useEffect, useState} from 'react';
+import {Button, Card, Form} from "react-bootstrap";
+import { Icon } from 'ts-react-feather-icons';
+import {Sort} from "../../types";
+
+interface SearchProps {
+    onInputChange: (value: string) => void;
+    onSortChange: (sort: Sort) => void;
+    initialValue: string;
+    initialSort: Sort;
+}
+
+const Search: FC<SearchProps> = ({onInputChange, onSortChange, initialValue, initialSort}): JSX.Element => {
+    const onSearchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        onInputChange(e.target.value);
+    }
+    
+    const focusRef = React.useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        focusRef.current?.focus();
+    }, []);
+
+    const onSortChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+        onSortChange(e.target.value as Sort);
+    }
+    return (
+        <Form>
+            <Form.Group className="my-3">
+                <div className="relative">
+                    <Form.Label><h5>Поиск товаров</h5></Form.Label>
+                    <Form.Control
+                        id="search-input"
+                        ref={focusRef}
+                        value={initialValue}
+                        onChange={onSearchChangeHandler}
+                        type="text"
+                        placeholder="Поиск товаров по названию"
+                    >
+                    </Form.Control>
+                    {initialValue.length > 0 && <Button onClick={() => onInputChange('')} className="clear" variant="warning">
+                        <Icon name="x-circle" size={18}/>
+                    </Button>}
+                </div>
+            </Form.Group>
+            <Form.Group className="my-3">
+                <Form.Label><h5>Сортировка</h5></Form.Label>
+                <Form.Select onChange={onSortChangeHandler} value={initialSort}>
+                    <option value={Sort.Default}>Выберите порядок</option>
+                    <option value={Sort.NameAsc}>По алфавиту от A до Z</option>
+                    <option value={Sort.NameDesc}>По алфавиту от Z до A</option>
+                    <option value={Sort.PriceAsc}>По цене по возрастанию</option>
+                    <option value={Sort.PriceDesc}>По цене по убыванию</option>
+                    <option value={Sort.CountAsc}>По количеству по возрастанию</option>
+                    <option value={Sort.CountDesc}>По количеству по убыванию</option>
+                    <option value={Sort.YearAsc}>По году выпуска по возрастанию</option>
+                    <option value={Sort.YearDesc}>По году выпуска по убыванию</option>
+                </Form.Select>
+            </Form.Group>
+        </Form>
+    );
+};
+
+export default Search;
