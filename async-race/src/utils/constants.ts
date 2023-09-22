@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://127.0.0.1:3000';
+export const BASE_URL = 'https://async-race-api-0yfj.onrender.com';
 export const CARS_COUNT = 100;
 export const CARS_LIMIT = 7;
 export const WINNERS_LIMIT = 10;
